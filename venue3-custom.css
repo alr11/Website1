@@ -1,0 +1,759 @@
+/* =========================================================================
+   VENUE3 — DESIGN & UX REFRESH
+   Custom stylesheet for the existing WordPress / Elementor site.
+
+   HOW TO INSTALL
+   --------------
+   Preferred:  Elementor > Site Settings > Custom CSS   (Elementor Pro)
+   Or:         Appearance > Customize > Additional CSS  (works on all setups)
+   Or:         a child theme's style.css
+
+   Do NOT paste this into the parent theme's style.css — it will be wiped
+   on the next theme update.
+
+   BEFORE IT WILL WORK
+   -------------------
+   This file hooks onto six CSS classes that you need to add to the existing
+   sections in the Elementor editor. For each section:
+       Edit Section > Advanced tab > CSS Classes  ->  type the class name
+
+       v3-hero          the top hero section (chandelier photo)
+       v3-gallery       "OUR SERVICES AND PACKAGES" / Gallery section
+       v3-venue         "Our Venue" section with the four hall cards
+       v3-contact       enquiry form + "It is our privilege..." section
+       v3-testimonials  "What our Guest and Clients Say" section
+       v3-infobar       the Location / Email / Call Us / Opening times band
+
+   Hooking onto classes you control is far more robust than targeting
+   Elementor's generated .elementor-element-xxxxx IDs, which change if a
+   widget is ever rebuilt.
+
+   IMPORTANT — NOT TESTED AGAINST THE LIVE SITE
+   --------------------------------------------
+   venue3.co.uk is blocked by this environment's network policy, so none of
+   this has been verified against the real DOM. Apply it on a staging copy
+   first. Selectors marked "VERIFY" are educated guesses at Elementor's
+   markup and are the most likely things to need adjusting.
+
+   ON !important
+   -------------
+   Elementor prints per-widget inline <style> blocks with very high
+   specificity (.elementor-1234 .elementor-element.elementor-element-abcd ...).
+   Custom CSS loads earlier and loses those fights. !important is used
+   deliberately below where an Elementor-set value must be overridden — not
+   out of laziness. Where it isn't needed, it isn't used.
+
+   This file changes appearance only. No element is hidden, no layout is
+   removed, and nothing here alters behaviour, links, or form submission.
+   ========================================================================= */
+
+
+/* =========================================================================
+   0. DESIGN TOKENS
+   ========================================================================= */
+
+:root {
+
+  /* ---- Colour -----------------------------------------------------------
+     Sampled by eye from the screenshot — replace with the site's real values
+     once you can pick them with a colour dropper. The relationships matter
+     more than the exact hex codes.                                        */
+
+  --v3-navy-900:  #0B1524;   /* deepest — footer, section bases            */
+  --v3-navy-800:  #0F1B2D;   /* main dark section background               */
+  --v3-navy-700:  #16243A;   /* raised surfaces, card fills                */
+  --v3-navy-600:  #1F3050;   /* borders on dark                            */
+
+  --v3-gold:      #E8B455;   /* primary accent                             */
+  --v3-gold-600:  #D19E3C;   /* hover / pressed                            */
+  --v3-gold-100:  rgba(232, 180, 85, 0.12);
+
+  /* Text — chosen for contrast, see section 2 */
+  --v3-on-dark:        #D8DEE7;  /* ~11:1 on navy-800                      */
+  --v3-on-dark-muted:  #A8B4C4;  /* ~6.4:1 — body minimum                  */
+  --v3-on-light:       #1A202C;
+  --v3-on-light-muted: #4A5568;  /* ~7.5:1 on white                        */
+
+  --v3-border-light: #CBD5E0;
+  --v3-white: #FFFFFF;
+
+  /* ---- Type -------------------------------------------------------------
+     The audit found 3-4 competing families. Consolidate to two.
+     Set these to fonts ALREADY enqueued by the theme — do not add a new
+     webfont, it costs render-blocking requests and wasn't approved.
+     Check what's loaded: Elementor > Site Settings > Global Fonts.        */
+
+  --v3-font-display: 'Poppins', 'Montserrat', system-ui, sans-serif;  /* VERIFY */
+  --v3-font-text:    'Poppins', 'Open Sans', system-ui, sans-serif;   /* VERIFY */
+
+  /* 1.25 ratio on a 16px base. Fluid where it matters. */
+  --v3-fs-small:      15px;
+  --v3-fs-body:       17px;
+  --v3-fs-lead:       19px;
+  --v3-fs-card-title: 22px;
+  --v3-fs-h3:         clamp(22px, 2.4vw, 28px);
+  --v3-fs-h2:         clamp(28px, 3.6vw, 40px);
+  --v3-fs-h1:         clamp(32px, 5vw, 56px);
+
+  --v3-lh-tight: 1.1;
+  --v3-lh-head:  1.25;
+  --v3-lh-body:  1.65;
+
+  /* ---- Spacing — 4px base ---------------------------------------------- */
+  --v3-space-1:  4px;
+  --v3-space-2:  8px;
+  --v3-space-3:  12px;
+  --v3-space-4:  16px;
+  --v3-space-5:  24px;
+  --v3-space-6:  32px;
+  --v3-space-7:  48px;
+  --v3-space-8:  64px;
+  --v3-space-9:  96px;
+  --v3-space-10: 128px;
+
+  --v3-section-y:   var(--v3-space-9);   /* desktop section padding        */
+  --v3-section-y-m: var(--v3-space-7);   /* mobile                         */
+
+  /* ---- Other ----------------------------------------------------------- */
+  --v3-radius:    12px;
+  --v3-radius-sm: 8px;
+  --v3-measure:   68ch;   /* readable line length                          */
+  --v3-tap:       48px;   /* minimum touch target                          */
+}
+
+
+/* =========================================================================
+   GROUP 2 — TYPOGRAPHY
+   Audit #4: 3-4 competing families, body copy ~12px, inverted hierarchy.
+   ========================================================================= */
+
+body,
+.elementor-widget-text-editor,
+.elementor-widget-text-editor p {
+  font-family: var(--v3-font-text);
+  font-size: var(--v3-fs-body);
+  line-height: var(--v3-lh-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Headings all move to the display face at consistent steps. */
+h1, h2, h3, h4, h5, h6,
+.elementor-heading-title {
+  font-family: var(--v3-font-display);
+  line-height: var(--v3-lh-head);
+  margin-top: 0;
+}
+
+h1, .elementor-widget-heading h1.elementor-heading-title {
+  font-size: var(--v3-fs-h1);
+  line-height: var(--v3-lh-tight);
+  letter-spacing: -0.02em;
+}
+
+h2, .elementor-widget-heading h2.elementor-heading-title {
+  font-size: var(--v3-fs-h2);
+  letter-spacing: -0.01em;
+}
+
+h3, .elementor-widget-heading h3.elementor-heading-title {
+  font-size: var(--v3-fs-h3);
+}
+
+/* Paragraph rhythm — replaces the cramped ~4px gaps in the hero. */
+.elementor-widget-text-editor p {
+  margin: 0 0 var(--v3-space-5);
+}
+.elementor-widget-text-editor p:last-child { margin-bottom: 0; }
+
+/* Heading-to-body gap. */
+.elementor-widget-heading { margin-bottom: var(--v3-space-4); }
+
+/* --- Fixing the inverted hierarchy ------------------------------------ */
+
+/* "It is our privilege and delight..." is marketing copy currently set
+   larger than anything else in its section. Demote it to h3 scale. */
+.v3-contact .elementor-widget-heading .elementor-heading-title {
+  font-size: var(--v3-fs-h3) !important;
+  font-weight: 400;
+  line-height: 1.35;
+  max-width: 20ch;
+}
+
+/* Address and phone are currently the SMALLEST text on the page despite
+   being the information most visitors are hunting for. Promote them. */
+.v3-contact .elementor-widget-text-editor,
+.v3-contact .elementor-widget-text-editor p {
+  font-size: 20px !important;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--v3-on-dark) !important;
+}
+
+/* The gold section eyebrow badges ("OUR SERVICES AND PACKAGES", "CONTACT
+   US") — make them read as labels, not headings. */
+.v3-hero .elementor-widget-heading .elementor-heading-title,
+.v3-gallery .elementor-button,
+.elementor-widget-heading .elementor-heading-title.v3-eyebrow {
+  letter-spacing: 0.08em;
+}
+
+
+/* =========================================================================
+   GROUP 3 — CONTRAST & FOCUS
+   Audit #5: light grey on navy, pale form labels, no visible focus states.
+   ========================================================================= */
+
+/* Body copy on the dark sections. The current mid-grey is the main AA
+   failure; --v3-on-dark lands around 11:1 on navy-800. */
+.v3-gallery,
+.v3-venue,
+.v3-contact,
+.v3-testimonials {
+  color: var(--v3-on-dark);
+}
+
+.v3-gallery p,
+.v3-venue p,
+.v3-testimonials p,
+.v3-gallery .elementor-heading-title,
+.v3-venue .elementor-heading-title {
+  color: var(--v3-on-dark) !important;
+}
+
+/* Anything genuinely secondary still clears 4.5:1. */
+.v3-venue .v3-muted,
+.v3-testimonials .v3-muted {
+  color: var(--v3-on-dark-muted) !important;
+}
+
+/* Footer copyright line — currently the lowest-contrast text on the page. */
+.site-footer,
+.site-footer p,
+.elementor-location-footer p {
+  color: var(--v3-on-dark-muted);
+  font-size: var(--v3-fs-small);
+}
+
+/* --- Focus visibility -------------------------------------------------
+   Very likely missing entirely. This is the single highest-value
+   accessibility fix here: keyboard users currently cannot see where they
+   are. Applies to every interactive element, nothing else changes.      */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+.elementor-button:focus-visible,
+.elementor-swiper-button:focus-visible {
+  outline: 3px solid var(--v3-gold);
+  outline-offset: 2px;
+  border-radius: var(--v3-radius-sm);
+}
+
+/* Don't strip focus for mouse users who click — only suppress the ring
+   where :focus-visible already handles it. */
+a:focus:not(:focus-visible),
+button:focus:not(:focus-visible) { outline: none; }
+
+
+/* =========================================================================
+   GROUP 4 — HERO
+   Audit #6: full-width 150ch text, no scrim, watermark competing with H1.
+   Audit #3 (CTA button) is an EDITOR task — see IMPLEMENTATION-NOTES.md
+   ========================================================================= */
+
+.v3-hero {
+  position: relative;
+  padding-top: var(--v3-space-10);
+  padding-bottom: var(--v3-space-9);
+}
+
+/* Scrim. Without this, hero text legibility swings wildly as the photo
+   moves from bright chandelier to dark ceiling. z-index keeps it behind
+   all content, so nothing becomes unclickable. */
+.v3-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(11, 21, 36, 0.78) 0%,
+    rgba(11, 21, 36, 0.55) 45%,
+    rgba(11, 21, 36, 0.80) 100%
+  );
+  pointer-events: none;   /* critical — keeps links/buttons clickable */
+  z-index: 0;
+}
+
+.v3-hero > * { position: relative; z-index: 1; }
+
+/* Constrain the measure. The hero copy currently runs ~150 characters per
+   line, roughly double the readable optimum. */
+.v3-hero .elementor-widget-text-editor,
+.v3-hero .elementor-widget-heading {
+  max-width: var(--v3-measure);
+}
+
+.v3-hero h1,
+.v3-hero .elementor-heading-title {
+  color: var(--v3-white) !important;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45);
+  margin-bottom: var(--v3-space-4);
+}
+
+.v3-hero .elementor-widget-text-editor,
+.v3-hero .elementor-widget-text-editor p {
+  color: var(--v3-on-dark) !important;
+  font-size: var(--v3-fs-lead);
+}
+
+/* The ghosted "VENUE 3" / "WELCOME TO" watermark sits behind the H1 and
+   competes with it. Fade rather than remove — it still reads as texture.
+   VERIFY: add class v3-watermark to that widget in Elementor. */
+.v3-hero .v3-watermark,
+.v3-hero .v3-watermark .elementor-heading-title {
+  opacity: 0.06 !important;
+  pointer-events: none;
+}
+
+
+/* =========================================================================
+   GROUP 5 — SPACING & VERTICAL RHYTHM
+   Audit #8: swings from ~500px of dead air to 4px paragraph gaps.
+   ========================================================================= */
+
+/* Covers both Elementor's legacy sections and newer flexbox containers. */
+.v3-hero,
+.v3-gallery,
+.v3-venue,
+.v3-contact,
+.v3-testimonials,
+.v3-infobar {
+  padding-top: var(--v3-section-y);
+  padding-bottom: var(--v3-section-y);
+}
+
+/* Consistent inner gutter so content never touches the viewport edge. */
+.v3-gallery > .elementor-container,
+.v3-venue > .elementor-container,
+.v3-contact > .elementor-container,
+.v3-testimonials > .elementor-container,
+.v3-infobar > .elementor-container {
+  padding-left: var(--v3-space-5);
+  padding-right: var(--v3-space-5);
+}
+
+/* Section intro blocks (eyebrow + heading + standfirst) get one rhythm. */
+.v3-gallery .elementor-widget-heading,
+.v3-venue .elementor-widget-heading {
+  margin-bottom: var(--v3-space-4);
+}
+
+
+/* =========================================================================
+   GROUP 6 — COMPONENT POLISH
+   ========================================================================= */
+
+/* --- 6a. Buttons (audit #3, #15) --------------------------------------
+   Gold currently appears on badges, buttons, icon strokes, names and stars
+   with no defined role. Reserve solid gold for actions.                  */
+
+.elementor-button,
+.elementor-button-link {
+  font-family: var(--v3-font-display);
+  font-size: var(--v3-fs-body);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  min-height: var(--v3-tap);
+  padding: var(--v3-space-3) var(--v3-space-6);
+  border-radius: 999px;
+  transition: background-color .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+
+.elementor-button:hover {
+  background-color: var(--v3-gold-600) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(232, 180, 85, 0.28);
+}
+
+.elementor-button:active { transform: translateY(0); }
+
+/* Secondary / ghost variant — add class v3-btn-ghost to the button widget
+   if you add the "View Gallery" CTA described in the notes. */
+.v3-btn-ghost .elementor-button {
+  background: transparent !important;
+  border: 2px solid var(--v3-gold);
+  color: var(--v3-gold) !important;
+}
+.v3-btn-ghost .elementor-button:hover {
+  background: var(--v3-gold-100) !important;
+  color: var(--v3-white) !important;
+}
+
+/* --- 6b. Hall cards (audit #2, #11) -----------------------------------
+   Cards currently have a large empty image box up top with text crammed
+   into the bottom. Padding + a visible surface makes them read as cards
+   even before the images are fixed.                                      */
+
+.v3-venue .elementor-widget-wrap,
+.v3-venue .v3-card {
+  background: var(--v3-navy-700);
+  border: 1px solid var(--v3-navy-600);
+  border-radius: var(--v3-radius);
+  padding: var(--v3-space-6);
+  height: 100%;
+  transition: transform .2s ease, border-color .2s ease;
+}
+
+.v3-venue .v3-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--v3-gold);
+}
+
+/* Consistent image ratio — stops cards from collapsing to different
+   heights once real photos go in. */
+.v3-venue .elementor-widget-image img {
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  width: 100%;
+  border-radius: var(--v3-radius-sm);
+  margin-bottom: var(--v3-space-4);
+}
+
+.v3-venue .elementor-widget-heading .elementor-heading-title {
+  font-size: var(--v3-fs-card-title) !important;
+  margin-bottom: var(--v3-space-3);
+}
+
+.v3-venue .elementor-widget-text-editor,
+.v3-venue .elementor-widget-text-editor p {
+  font-size: var(--v3-fs-body) !important;
+  line-height: var(--v3-lh-body);
+}
+
+/* --- 6c. Enquiry form (audit #9) --------------------------------------
+   Underline-only inputs with near-invisible hairlines and tiny pale
+   labels. Switch to bordered fields with real affordance.
+   VERIFY: these are Elementor Pro Form widget classes.                   */
+
+.elementor-field-group > label,
+.elementor-field-label {
+  font-size: var(--v3-fs-small) !important;
+  font-weight: 600;
+  color: var(--v3-on-light-muted) !important;
+  margin-bottom: var(--v3-space-2);
+  display: block;
+}
+
+.elementor-field-group .elementor-field,
+.elementor-field-textual,
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+select,
+textarea {
+  font-family: var(--v3-font-text);
+  font-size: var(--v3-fs-body) !important;
+  color: var(--v3-on-light) !important;
+  background: var(--v3-white);
+  border: 1px solid var(--v3-border-light) !important;
+  border-radius: var(--v3-radius-sm) !important;
+  padding: var(--v3-space-3) var(--v3-space-4) !important;
+  min-height: var(--v3-tap);
+  width: 100%;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.elementor-field-textual:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--v3-gold) !important;
+  box-shadow: 0 0 0 3px var(--v3-gold-100);
+  outline: none;
+}
+
+::placeholder { color: #94A3B8; opacity: 1; }
+
+/* Required-field marking — currently there's no visual indication. */
+.elementor-field-required > label::after,
+.elementor-field-group.elementor-field-required label::after {
+  content: ' *';
+  color: #C53030;
+  font-weight: 700;
+}
+
+/* Submit button to full width of the form column. */
+.elementor-form .elementor-button {
+  width: 100%;
+  justify-content: center;
+  min-height: var(--v3-tap);
+  font-size: var(--v3-fs-body);
+}
+
+/* Form card container. */
+.v3-contact .elementor-widget-form {
+  background: var(--v3-white);
+  border-radius: var(--v3-radius);
+  padding: var(--v3-space-7);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+}
+
+.v3-contact .elementor-widget-form .elementor-heading-title {
+  color: var(--v3-on-light) !important;
+}
+
+/* Field spacing. */
+.elementor-field-group { margin-bottom: var(--v3-space-4); }
+
+/* --- 6d. Testimonials (audit #11) -------------------------------------
+   Three columns of ~12px text floating with no boundary — they blur into
+   each other. Give each one a card.                                      */
+
+.v3-testimonials .elementor-testimonial,
+.v3-testimonials .v3-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--v3-navy-600);
+  border-radius: var(--v3-radius);
+  padding: var(--v3-space-6);
+  height: 100%;
+}
+
+.v3-testimonials .elementor-testimonial__text,
+.v3-testimonials p {
+  font-size: var(--v3-fs-body) !important;
+  line-height: var(--v3-lh-body);
+  color: var(--v3-on-dark) !important;
+}
+
+.v3-testimonials .elementor-testimonial__name,
+.v3-testimonials .v3-name {
+  font-family: var(--v3-font-display);
+  font-size: var(--v3-fs-body);
+  font-weight: 600;
+  color: var(--v3-gold) !important;
+  margin-bottom: var(--v3-space-3);
+  display: block;
+}
+
+.v3-testimonials .elementor-star-rating { font-size: 15px; }
+
+/* --- 6e. Carousel controls (audit #10) --------------------------------
+   Arrows currently sit at the extreme viewport edges, hundreds of pixels
+   from the content they drive, and are small. Pull them in, enlarge to a
+   proper tap target, and make them visible against any slide.            */
+
+.elementor-swiper-button,
+.elementor-swiper-button-prev,
+.elementor-swiper-button-next {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(11, 21, 36, 0.6);
+  border: 1px solid var(--v3-gold);
+  border-radius: 50%;
+  color: var(--v3-gold);
+  font-size: 18px;
+  transition: background-color .18s ease;
+}
+
+.elementor-swiper-button:hover {
+  background: var(--v3-gold);
+  color: var(--v3-navy-900);
+}
+
+.elementor-swiper-button-prev { left: var(--v3-space-4); }
+.elementor-swiper-button-next { right: var(--v3-space-4); }
+
+/* Pagination dots — enlarge from the default pinpricks. */
+.swiper-pagination-bullet {
+  width: 10px;
+  height: 10px;
+  background: var(--v3-on-dark-muted);
+  opacity: .5;
+}
+.swiper-pagination-bullet-active {
+  background: var(--v3-gold);
+  opacity: 1;
+}
+
+
+/* =========================================================================
+   GROUP 7 — HEADER, INFO BAR, FOOTER
+   Audit #12, #13, #16
+   ========================================================================= */
+
+/* --- Header ------------------------------------------------------------
+   Nav links are low-contrast over the busy chandelier photo. A subtle
+   top-down scrim fixes legibility without hiding the image.
+   VERIFY: header wrapper class varies by theme.                          */
+
+.site-header,
+.elementor-location-header {
+  position: relative;
+}
+
+.site-header::before,
+.elementor-location-header::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 140px;
+  background: linear-gradient(180deg, rgba(11, 21, 36, 0.72), transparent);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.site-header > *,
+.elementor-location-header > * { position: relative; z-index: 1; }
+
+/* Nav links — larger tap target and clearer active state. */
+.elementor-nav-menu .elementor-item {
+  font-family: var(--v3-font-display);
+  font-size: var(--v3-fs-small);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--v3-white) !important;
+  padding: var(--v3-space-3) var(--v3-space-4) !important;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+}
+
+.elementor-nav-menu .elementor-item:hover,
+.elementor-nav-menu .elementor-item.elementor-item-active {
+  color: var(--v3-gold) !important;
+}
+
+/* Underline the current page rather than relying on colour alone —
+   colour-only state indication is an accessibility failure. */
+.elementor-nav-menu .elementor-item.elementor-item-active {
+  border-bottom: 2px solid var(--v3-gold);
+}
+
+/* --- Info bar (Location / Email / Call Us / Opening times) ------------- */
+
+.v3-infobar .elementor-icon-box-title,
+.v3-infobar .elementor-heading-title {
+  font-family: var(--v3-font-display);
+  font-size: var(--v3-fs-card-title) !important;
+  margin-bottom: var(--v3-space-2);
+}
+
+.v3-infobar .elementor-icon-box-description,
+.v3-infobar p {
+  font-size: var(--v3-fs-body) !important;
+  line-height: var(--v3-lh-body);
+}
+
+/* Make the phone number and email obviously actionable. */
+.v3-infobar a { color: inherit; text-decoration: none; }
+.v3-infobar a:hover { color: var(--v3-gold); text-decoration: underline; }
+
+/* --- WhatsApp float (audit #16) ---------------------------------------
+   Default green against a navy/gold palette makes it the loudest thing on
+   the page. Tone down at rest, full colour on hover so it stays obvious.
+   VERIFY: plugin-specific class.                                         */
+
+.v3-whatsapp,
+.wa__btn_popup,
+.joinchat__button {
+  filter: saturate(0.85);
+  transition: filter .2s ease, transform .2s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.v3-whatsapp:hover,
+.wa__btn_popup:hover,
+.joinchat__button:hover {
+  filter: saturate(1);
+  transform: scale(1.05);
+}
+
+
+/* =========================================================================
+   GROUP 8 — RESPONSIVE
+   Audit #17. Could not assess mobile from the desktop screenshot — test
+   these on a real device before shipping.
+   ========================================================================= */
+
+/* --- Tablet: 4-across grids drop to 2 --------------------------------- */
+@media (max-width: 1024px) {
+
+  :root {
+    --v3-section-y: var(--v3-space-8);
+  }
+
+  .v3-venue .elementor-column,
+  .v3-infobar .elementor-column {
+    width: 50% !important;
+  }
+
+  .v3-testimonials .elementor-column { width: 100% !important; }
+
+  .v3-contact .elementor-column { width: 100% !important; }
+
+  .v3-contact .elementor-widget-form { margin-bottom: var(--v3-space-6); }
+}
+
+/* --- Mobile: single column -------------------------------------------- */
+@media (max-width: 640px) {
+
+  :root {
+    --v3-section-y: var(--v3-section-y-m);
+    --v3-fs-body: 16px;
+    --v3-fs-lead: 17px;
+  }
+
+  .v3-venue .elementor-column,
+  .v3-infobar .elementor-column,
+  .v3-testimonials .elementor-column {
+    width: 100% !important;
+  }
+
+  /* The hero's long paragraphs are punishing on a narrow screen. */
+  .v3-hero {
+    padding-top: var(--v3-space-8);
+    padding-bottom: var(--v3-space-7);
+    text-align: left;
+  }
+
+  .v3-hero .elementor-widget-text-editor,
+  .v3-hero .elementor-widget-heading {
+    max-width: 100%;
+  }
+
+  .v3-contact .elementor-widget-form { padding: var(--v3-space-5); }
+
+  .v3-venue .elementor-widget-wrap,
+  .v3-venue .v3-card,
+  .v3-testimonials .v3-card {
+    padding: var(--v3-space-5);
+  }
+
+  /* Carousel arrows overlap content badly at this width — move them below
+     the slides rather than over them. */
+  .elementor-swiper-button-prev { left: var(--v3-space-2); }
+  .elementor-swiper-button-next { right: var(--v3-space-2); }
+
+  /* Stack any side-by-side buttons full width. */
+  .elementor-button { width: 100%; justify-content: center; }
+}
+
+
+/* =========================================================================
+   MOTION & PRINT
+   ========================================================================= */
+
+/* Respect users who've asked for reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
