@@ -1,0 +1,110 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PackageCard from '../../components/PackageCard.astro';
+import SmartImage from '../../components/SmartImage.astro';
+import { categories, packagesIn, type Category, type Package } from '../../data/packages';
+import { site } from '../../data/site';
+
+export function getStaticPaths() {
+  return categories.map((category) => ({
+    params: { category: category.slug },
+    props: { category, items: packagesIn(category.slug) },
+  }));
+}
+
+interface Props {
+  category: Category;
+  items: Package[];
+}
+
+const { category, items } = Astro.props;
+const description = `${category.title.toLowerCase()} hire in ${site.serviceArea}. ${category.tagline}`;
+---
+
+<BaseLayout title={category.title} description={description}>
+  <nav class="crumbs wrap" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="/">Home</a></li>
+      <li aria-current="page">{category.title}</li>
+    </ol>
+  </nav>
+
+  <header class="cat-hero">
+    <div class="wrap cat-hero__inner">
+      <div class="cat-hero__text">
+        <p class="eyebrow">Packages &amp; hire</p>
+        <h1>{category.title}</h1>
+        <p class="lede">{category.intro}</p>
+        <div class="btn-row">
+          <a class="btn btn--primary" href="/contact">Enquire about your date</a>
+          <a class="btn btn--ghost" href="/price-list">See all prices</a>
+        </div>
+      </div>
+      <div class="cat-hero__media">
+        <SmartImage
+          src={`/images/categories/${category.slug}.jpg`}
+          alt={category.title}
+          ratio="4 / 3"
+          loading="eager"
+        />
+      </div>
+    </div>
+  </header>
+
+  <section class="section section--tint" aria-labelledby="options-heading">
+    <div class="wrap">
+      <h2 id="options-heading" class="visually-hidden">
+        {category.title} options
+      </h2>
+      <div class="grid grid--3">
+        {items.map((pkg) => <PackageCard pkg={pkg} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap wrap--narrow">
+      <h2>Something different in mind?</h2>
+      <p class="lede">
+        These are our standard setups, but most bookings get adjusted — different colours,
+        a larger backdrop, extra tables. Tell us what you are picturing and we will quote
+        for it.
+      </p>
+      <div class="btn-row">
+        <a class="btn btn--primary" href="/contact">Ask a question</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .cat-hero {
+    padding-block: 1.5rem 2.5rem;
+  }
+
+  .cat-hero__inner {
+    display: grid;
+    gap: 1.75rem;
+    grid-template-columns: 1fr;
+    align-items: center;
+  }
+
+  @media (min-width: 900px) {
+    .cat-hero {
+      padding-block: 2rem 3.5rem;
+    }
+    .cat-hero__inner {
+      grid-template-columns: 1.1fr 1fr;
+      gap: 3rem;
+    }
+  }
+
+  .cat-hero__text h1 {
+    margin-bottom: 0.6rem;
+  }
+
+  .cat-hero__media :global(.smart-img),
+  .cat-hero__media :global(.img-ph) {
+    border-radius: var(--radius);
+  }
+</style>

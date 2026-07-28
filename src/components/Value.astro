@@ -1,0 +1,29 @@
+---
+/**
+ * Value
+ * ---------------------------------------------------------------------------
+ * Prints a piece of business data. If it is still an unfilled "[PLACEHOLDER]"
+ * it is styled distinctly so it is obvious on the page — and impossible to
+ * mistake for real information — until you replace it in src/data/.
+ */
+import { isPlaceholder } from '../data/site';
+
+interface Props {
+  value: string;
+  /** Optional link, e.g. "tel:" or "mailto:" — skipped while placeholder. */
+  href?: string;
+}
+
+const { value, href } = Astro.props;
+const placeholder = isPlaceholder(value);
+---
+
+{
+  placeholder ? (
+    <span class="ph">{value}</span>
+  ) : href ? (
+    <a href={href}>{value}</a>
+  ) : (
+    <span>{value}</span>
+  )
+}

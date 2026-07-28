@@ -1,0 +1,102 @@
+---
+import type { Category } from '../data/packages';
+import { packagesIn } from '../data/packages';
+import SmartImage from './SmartImage.astro';
+
+interface Props {
+  category: Category;
+}
+
+const { category } = Astro.props;
+const count = packagesIn(category.slug).length;
+---
+
+<a class="tile" href={`/${category.slug}`}>
+  <span class="tile__media">
+    <SmartImage
+      src={`/images/categories/${category.slug}.jpg`}
+      alt={category.title}
+      ratio="4 / 3"
+    />
+  </span>
+  <span class="tile__body">
+    <span class="tile__title">{category.title}</span>
+    <span class="tile__tagline">{category.tagline}</span>
+    <span class="tile__meta">
+      {count} {count === 1 ? 'option' : 'options'}
+      <span class="tile__arrow" aria-hidden="true">&rarr;</span>
+    </span>
+  </span>
+</a>
+
+<style>
+  .tile {
+    display: flex;
+    flex-direction: column;
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    height: 100%;
+  }
+
+  .tile:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--teal-light);
+  }
+
+  .tile__media {
+    display: block;
+    overflow: hidden;
+  }
+
+  .tile__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 1.15rem 1.25rem 1.35rem;
+    flex: 1;
+  }
+
+  .tile__title {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--navy);
+    line-height: 1.2;
+  }
+
+  .tile__tagline {
+    color: var(--ink-soft);
+    font-size: 0.93rem;
+    flex: 1;
+  }
+
+  .tile__meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-top: 0.4rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--sand);
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--teal);
+    font-weight: 600;
+  }
+
+  .tile__arrow {
+    transition: transform 0.2s ease;
+  }
+
+  .tile:hover .tile__arrow {
+    transform: translateX(4px);
+  }
+</style>

@@ -1,0 +1,209 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Value from '../components/Value.astro';
+import { categories, packagesIn, packageUrl, packages } from '../data/packages';
+import { site, isPlaceholder } from '../data/site';
+
+const description = `Full price list for ${site.name} event decor hire in ${site.serviceArea} — wedding packages, party hire, baby showers, venue styling and add-on rentals.`;
+
+// True while nothing has been priced yet — drives the notice at the top.
+const anyPriced = packages.some((p) => !isPlaceholder(p.price));
+---
+
+<BaseLayout title="Price List" description={description}>
+  <nav class="crumbs wrap" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="/">Home</a></li>
+      <li aria-current="page">Price List</li>
+    </ol>
+  </nav>
+
+  <header class="page-head">
+    <div class="wrap wrap--narrow">
+      <p class="eyebrow">Everything we hire</p>
+      <h1>Price List</h1>
+      <p class="lede">
+        Every package and hire item in one place. Prices are a guide — final quotes depend
+        on your venue, date and how much setup is involved. Delivery within
+        {site.serviceArea} is included unless stated otherwise.
+      </p>
+    </div>
+  </header>
+
+  {
+    !anyPriced && (
+      <div class="wrap wrap--narrow">
+        <p class="price-notice">
+          <strong>Setup note (remove once priced):</strong> no prices have been entered yet.
+          Every <code>price</code> and <code>hirePeriod</code> below is a placeholder —
+          fill them in at <code>src/data/packages.ts</code> and this notice disappears
+          automatically.
+        </p>
+      </div>
+    )
+  }
+
+  <div class="wrap price-tables">
+    {
+      categories.map((category) => (
+        <section class="price-block" aria-labelledby={`price-${category.slug}`}>
+          <div class="price-block__head">
+            <h2 id={`price-${category.slug}`}>{category.title}</h2>
+            <a class="price-block__link" href={`/${category.slug}`}>
+              View range &rarr;
+            </a>
+          </div>
+
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Package / item</th>
+                  <th scope="col">Hire period</th>
+                  <th scope="col">Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                {packagesIn(category.slug).map((pkg) => (
+                  <tr>
+                    <th scope="row" class="price-row__name">
+                      <a href={packageUrl(pkg)}>{pkg.title}</a>
+                      <span class="price-row__summary">{pkg.summary}</span>
+                    </th>
+                    <td>
+                      <Value value={pkg.hirePeriod} />
+                    </td>
+                    <td class="price-row__price">
+                      <Value value={pkg.price} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      ))
+    }
+  </div>
+
+  <section class="section">
+    <div class="wrap wrap--narrow">
+      <h2>Good to know</h2>
+      <ul class="notes">
+        <li>
+          Prices are for hire only. Everything is delivered, installed and collected by us.
+        </li>
+        <li>
+          Travel outside {site.serviceArea} may be charged separately &mdash;
+          <Value value="[TRAVEL CHARGE POLICY]" /> &mdash; please ask when enquiring.
+        </li>
+        <li>
+          A booking is confirmed on receipt of a deposit of
+          <Value value="[DEPOSIT AMOUNT / PERCENTAGE]" />, with the balance due
+          <Value value="[BALANCE DUE TERMS]" />.
+        </li>
+        <li>
+          Cancellation terms: <Value value="[CANCELLATION POLICY]" />.
+        </li>
+        <li>
+          Damage or loss of hired items is charged at replacement cost &mdash;
+          <Value value="[DAMAGE / DEPOSIT TERMS]" />.
+        </li>
+      </ul>
+
+      <div class="btn-row">
+        <a class="btn btn--primary" href="/contact">Request a quote</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-head {
+    padding-block: 1.5rem 2rem;
+  }
+
+  .price-notice {
+    padding: 0.9rem 1.1rem;
+    background: var(--flag-wash);
+    border: 1px dashed var(--flag);
+    border-radius: var(--radius);
+    font-size: 0.88rem;
+    color: #8c3421;
+    line-height: 1.55;
+  }
+
+  .price-notice code {
+    background: rgba(255, 255, 255, 0.7);
+    padding: 0.1em 0.35em;
+    border-radius: 3px;
+    font-size: 0.92em;
+  }
+
+  .price-tables {
+    padding-bottom: 1rem;
+  }
+
+  .price-block {
+    margin-bottom: 2.5rem;
+  }
+
+  .price-block__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .price-block__head h2 {
+    margin: 0;
+    font-size: clamp(1.35rem, 3.5vw, 1.75rem);
+  }
+
+  .price-block__link {
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+
+  .price-row__name {
+    font-weight: 600;
+    max-width: 26rem;
+  }
+
+  .price-row__name a {
+    text-decoration: none;
+    color: var(--navy);
+  }
+
+  .price-row__name a:hover {
+    color: var(--teal);
+    text-decoration: underline;
+  }
+
+  .price-row__summary {
+    display: block;
+    font-weight: 400;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    margin-top: 0.15rem;
+  }
+
+  .price-row__price {
+    font-weight: 700;
+    color: var(--navy);
+    white-space: nowrap;
+  }
+
+  .notes {
+    color: var(--ink-soft);
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    max-width: 62ch;
+  }
+</style>

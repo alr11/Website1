@@ -1,0 +1,308 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SmartImage from '../components/SmartImage.astro';
+import CategoryTile from '../components/CategoryTile.astro';
+import TrustedBy from '../components/TrustedBy.astro';
+import Value from '../components/Value.astro';
+import { site, isPlaceholder } from '../data/site';
+import { categories } from '../data/packages';
+
+const description = `Event decoration hire in ${site.serviceArea}. Wedding and party styling, backdrops, balloon displays, venue packages and add-on rentals — delivered, set up and collected.`;
+---
+
+<BaseLayout title="home" description={description}>
+  <!-- ------------------------------------------------------------- hero -->
+  <section class="hero">
+    <div class="hero__media">
+      <SmartImage
+        src="/images/hero.jpg"
+        alt="An event styled by Nashwyn Art"
+        ratio="16 / 9"
+        loading="eager"
+      />
+    </div>
+    <div class="hero__overlay">
+      <div class="wrap hero__content">
+        <p class="hero__eyebrow">{site.descriptor} &mdash; {site.serviceArea}</p>
+        <h1 class="hero__title">Decor hire that makes the room</h1>
+        <p class="hero__lede">
+          Backdrops, drapes, balloon displays and full venue styling for weddings,
+          birthdays and celebrations. Delivered, installed and collected by us.
+        </p>
+        <div class="btn-row">
+          <a class="btn btn--primary" href="/contact">Check your date</a>
+          <a class="btn btn--on-dark" href="/price-list">View price list</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- -------------------------------------------------------- intro copy -->
+  <section class="section">
+    <div class="wrap wrap--narrow intro">
+      <p class="eyebrow">About us</p>
+      <h2>Styling for the days that matter</h2>
+      <p class="lede">
+        {site.name} is an event decoration hire business covering {site.serviceAreaLong}.
+        We supply and install the decor that turns a plain hall, marquee or function
+        room into a finished setting — ceremony backdrops, entrance walkways, balloon
+        installations, floral displays and dressed tables.
+      </p>
+      <p>
+        Every booking is set up by us on the day and collected afterwards, so there is
+        nothing for you or your venue to assemble, store or return. Colour schemes are
+        agreed with you in advance and matched across the whole setup.
+      </p>
+      <p>
+        Not sure which package fits? Tell us your venue, date and rough guest numbers and
+        we will point you to the right one.
+      </p>
+      <div class="btn-row">
+        <a class="btn btn--ghost" href="/contact">Get in touch</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------------------------------------------------- category -->
+  <section class="section section--tint" aria-labelledby="categories-heading">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">What we hire</p>
+        <h2 id="categories-heading">Packages &amp; hire</h2>
+        <p class="lede">
+          Browse by occasion. Every package can be adjusted to your venue and colours,
+          and add-on items can be combined with any of them.
+        </p>
+      </div>
+
+      <div class="grid grid--3">
+        {categories.map((category) => <CategoryTile category={category} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- ----------------------------------------------- trusted-by (if any) -->
+  <TrustedBy />
+
+  <!-- --------------------------------------------------------- how it works -->
+  <section class="section" aria-labelledby="how-heading">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">How it works</p>
+        <h2 id="how-heading">Three steps, start to finish</h2>
+      </div>
+
+      <ol class="steps">
+        <li class="step">
+          <span class="step__num" aria-hidden="true">1</span>
+          <h3>Enquire</h3>
+          <p>
+            Send us your date, venue and what you have in mind. We will confirm
+            availability and talk through the options that suit your space.
+          </p>
+        </li>
+        <li class="step">
+          <span class="step__num" aria-hidden="true">2</span>
+          <h3>Plan &amp; confirm</h3>
+          <p>
+            We agree the colour scheme, pieces and access times with you, and coordinate
+            setup directly with your venue.
+          </p>
+        </li>
+        <li class="step">
+          <span class="step__num" aria-hidden="true">3</span>
+          <h3>We set up &amp; collect</h3>
+          <p>
+            Everything is installed before guests arrive and taken away afterwards.
+            Nothing for you to build, store or return.
+          </p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------- call to action -->
+  <section class="section section--navy cta">
+    <div class="wrap wrap--narrow cta__inner">
+      <h2>Check your date</h2>
+      <p>
+        Dates book up quickly in peak season. Send an enquiry and we will come back to
+        you with availability and a quote.
+      </p>
+      <div class="cta__contacts">
+        <p>
+          <span class="cta__label">Phone</span>
+          <Value
+            value={site.phone}
+            href={isPlaceholder(site.phoneHref) ? undefined : `tel:${site.phoneHref}`}
+          />
+        </p>
+        <p>
+          <span class="cta__label">Email</span>
+          <Value
+            value={site.email}
+            href={isPlaceholder(site.email) ? undefined : `mailto:${site.email}`}
+          />
+        </p>
+      </div>
+      <div class="btn-row">
+        <a class="btn btn--primary" href="/contact">Send an enquiry</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ------------------------------------------------------------------ hero */
+
+  .hero {
+    position: relative;
+    background: var(--navy-deep);
+  }
+
+  .hero__media :global(.smart-img),
+  .hero__media :global(.img-ph) {
+    min-height: 380px;
+    max-height: 78vh;
+  }
+
+  .hero__overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    background: linear-gradient(
+      to top,
+      rgba(10, 26, 39, 0.92) 0%,
+      rgba(10, 26, 39, 0.6) 45%,
+      rgba(10, 26, 39, 0.15) 100%
+    );
+  }
+
+  .hero__content {
+    padding-block: 2.5rem 3rem;
+    color: var(--white);
+  }
+
+  .hero__eyebrow {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--teal-light);
+    margin: 0 0 0.75rem;
+  }
+
+  .hero__title {
+    color: var(--white);
+    margin: 0 0 0.75rem;
+    max-width: 16ch;
+  }
+
+  .hero__lede {
+    color: #d5e0e8;
+    font-size: 1.05rem;
+    max-width: 52ch;
+    margin: 0;
+  }
+
+  @media (min-width: 768px) {
+    .hero__content {
+      padding-block: 4rem 4.5rem;
+    }
+    .hero__lede {
+      font-size: 1.15rem;
+    }
+  }
+
+  /* --------------------------------------------------------------- intro */
+
+  .intro {
+    text-align: left;
+  }
+
+  .section-head {
+    max-width: 60ch;
+    margin-bottom: 2rem;
+  }
+
+  /* --------------------------------------------------------------- steps */
+
+  .steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+    counter-reset: step;
+  }
+
+  @media (min-width: 768px) {
+    .steps {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem;
+    }
+  }
+
+  .step {
+    padding-top: 1.25rem;
+    border-top: 2px solid var(--teal-wash);
+  }
+
+  .step__num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 50%;
+    background: var(--teal);
+    color: var(--white);
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .step h3 {
+    margin-bottom: 0.4rem;
+  }
+
+  .step p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+  }
+
+  /* ----------------------------------------------------------------- cta */
+
+  .cta__inner p {
+    color: #c3d0da;
+  }
+
+  .cta__contacts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 2.5rem;
+    margin-block: 1.25rem 0;
+  }
+
+  .cta__contacts p {
+    margin: 0;
+    display: flex;
+    gap: 0.5rem;
+    align-items: baseline;
+  }
+
+  .cta__contacts :global(a) {
+    color: var(--white);
+    font-weight: 600;
+  }
+
+  .cta__label {
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--teal-light);
+  }
+</style>

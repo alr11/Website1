@@ -1,0 +1,262 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ContactForm from '../components/ContactForm.astro';
+import Value from '../components/Value.astro';
+import { site, isPlaceholder, activeSocials } from '../data/site';
+
+const description = `Contact ${site.name} for event decor hire in ${site.serviceArea}. Send an enquiry with your date and venue for a quote.`;
+
+const socials = activeSocials();
+const addressParts = [
+  site.address.line1,
+  site.address.line2,
+  site.address.town,
+  site.address.postcode,
+].filter(Boolean);
+---
+
+<BaseLayout title="Contact" description={description}>
+  <nav class="crumbs wrap" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="/">Home</a></li>
+      <li aria-current="page">Contact</li>
+    </ol>
+  </nav>
+
+  <header class="page-head">
+    <div class="wrap wrap--narrow">
+      <p class="eyebrow">Get in touch</p>
+      <h1>Contact us</h1>
+      <p class="lede">
+        Tell us your date, venue and roughly what you have in mind, and we will come back
+        to you with availability and a quote. We cover {site.serviceAreaLong}.
+      </p>
+    </div>
+  </header>
+
+  <section class="section contact">
+    <div class="wrap contact__grid">
+      <!-- ------------------------------------------------------------ form -->
+      <div class="contact__form">
+        <h2>Send an enquiry</h2>
+        <p class="contact__hint">
+          Fields marked <span class="req">*</span> are required.
+        </p>
+        <ContactForm />
+      </div>
+
+      <!-- --------------------------------------------------------- details -->
+      <aside class="contact__aside" aria-label="Contact details">
+        <div class="info-card">
+          <h2 class="info-card__title">Contact details</h2>
+
+          <div class="info-card__row">
+            <span class="info-card__label">Phone</span>
+            <span class="info-card__value">
+              <Value
+                value={site.phone}
+                href={isPlaceholder(site.phoneHref) ? undefined : `tel:${site.phoneHref}`}
+              />
+            </span>
+          </div>
+
+          <div class="info-card__row">
+            <span class="info-card__label">Email</span>
+            <span class="info-card__value">
+              <Value
+                value={site.email}
+                href={isPlaceholder(site.email) ? undefined : `mailto:${site.email}`}
+              />
+            </span>
+          </div>
+
+          <div class="info-card__row">
+            <span class="info-card__label">Address</span>
+            <address class="info-card__value info-card__address">
+              {addressParts.map((part) => <span><Value value={part} /></span>)}
+            </address>
+          </div>
+
+          <div class="info-card__row">
+            <span class="info-card__label">Area covered</span>
+            <span class="info-card__value">{site.serviceAreaLong}</span>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <h2 class="info-card__title">Opening hours</h2>
+          <dl class="hours">
+            {
+              site.hours.map((h) => (
+                <div class="hours__row">
+                  <dt>{h.days}</dt>
+                  <dd>
+                    <Value value={h.time} />
+                  </dd>
+                </div>
+              ))
+            }
+          </dl>
+          <p class="info-card__note">
+            Setups often take place outside these hours &mdash; enquiries are answered as
+            soon as we are back from an event.
+          </p>
+        </div>
+
+        {
+          socials.length > 0 && (
+            <div class="info-card">
+              <h2 class="info-card__title">Follow us</h2>
+              <ul class="info-card__socials">
+                {socials.map((s) => (
+                  <li>
+                    <a href={s.url} target="_blank" rel="me noopener">
+                      {s.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-head {
+    padding-block: 1.5rem 0.5rem;
+  }
+
+  .contact {
+    padding-top: 2rem;
+  }
+
+  .contact__grid {
+    display: grid;
+    gap: 2.5rem;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 900px) {
+    .contact__grid {
+      grid-template-columns: 1.35fr 1fr;
+      gap: 3.5rem;
+      align-items: start;
+    }
+  }
+
+  .contact__form h2 {
+    margin-bottom: 0.3rem;
+  }
+
+  .contact__hint {
+    color: var(--ink-soft);
+    font-size: 0.88rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .req {
+    color: var(--flag);
+    font-weight: 700;
+  }
+
+  /* ------------------------------------------------------------- aside */
+
+  .contact__aside {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .info-card {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.35rem 1.5rem;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .info-card__title {
+    font-size: 1.15rem;
+    margin-bottom: 1rem;
+  }
+
+  .info-card__row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding-block: 0.6rem;
+    border-top: 1px solid var(--sand);
+  }
+
+  .info-card__row:first-of-type {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .info-card__label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .info-card__value {
+    font-size: 1rem;
+    color: var(--navy);
+    font-weight: 500;
+  }
+
+  .info-card__address {
+    font-style: normal;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .info-card__note {
+    margin: 1rem 0 0;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+  }
+
+  .info-card__socials {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .hours {
+    margin: 0;
+  }
+
+  .hours__row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding-block: 0.4rem;
+    border-bottom: 1px solid var(--sand);
+    font-size: 0.95rem;
+  }
+
+  .hours__row:last-child {
+    border-bottom: 0;
+  }
+
+  .hours dt {
+    color: var(--ink-soft);
+  }
+
+  .hours dd {
+    margin: 0;
+    text-align: right;
+    color: var(--navy);
+    font-weight: 500;
+  }
+</style>

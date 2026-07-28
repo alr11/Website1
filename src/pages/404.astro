@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { categories } from '../data/packages';
+---
+
+<BaseLayout title="Page not found" description="The page you were looking for could not be found.">
+  <section class="section notfound">
+    <div class="wrap wrap--narrow">
+      <p class="eyebrow">404</p>
+      <h1>We can't find that page</h1>
+      <p class="lede">
+        The link may be out of date, or the page may have moved. Here is where to go next.
+      </p>
+      <ul class="notfound__links">
+        <li><a href="/">Home</a></li>
+        {categories.map((c) => <li><a href={`/${c.slug}`}>{c.title}</a></li>)}
+        <li><a href="/price-list">Price List</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .notfound {
+    padding-block: 4rem 5rem;
+  }
+
+  .notfound__links {
+    list-style: none;
+    padding: 0;
+    margin-top: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .notfound__links a {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  .notfound__links a:hover {
+    border-color: var(--teal);
+    background: var(--teal-wash);
+  }
+</style>

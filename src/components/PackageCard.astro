@@ -1,0 +1,93 @@
+---
+import type { Package } from '../data/packages';
+import { packagePhotos, packageUrl } from '../data/packages';
+import SmartImage from './SmartImage.astro';
+import Value from './Value.astro';
+
+interface Props {
+  pkg: Package;
+}
+
+const { pkg } = Astro.props;
+const cover = packagePhotos(pkg)[0];
+const url = packageUrl(pkg);
+---
+
+<article class="pkg-card">
+  <a class="pkg-card__link" href={url}>
+    <SmartImage src={cover} alt={pkg.title} ratio="4 / 3" />
+    <div class="pkg-card__body">
+      <h3 class="pkg-card__title">{pkg.title}</h3>
+      <p class="pkg-card__summary">{pkg.summary}</p>
+      <p class="pkg-card__price">
+        <span class="pkg-card__price-label">From</span>
+        <Value value={pkg.price} />
+      </p>
+    </div>
+  </a>
+</article>
+
+<style>
+  .pkg-card {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    height: 100%;
+  }
+
+  .pkg-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--teal-light);
+  }
+
+  .pkg-card__link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .pkg-card__body {
+    padding: 1.1rem 1.25rem 1.3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    flex: 1;
+  }
+
+  .pkg-card__title {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+
+  .pkg-card__summary {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+    flex: 1;
+  }
+
+  .pkg-card__price {
+    margin: 0.6rem 0 0;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--sand);
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-weight: 700;
+    color: var(--navy);
+  }
+
+  .pkg-card__price-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-weight: 600;
+  }
+</style>

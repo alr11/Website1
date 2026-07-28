@@ -1,0 +1,233 @@
+---
+import { site, activeSocials, isPlaceholder } from '../data/site';
+import { categories } from '../data/packages';
+import Value from './Value.astro';
+
+const socials = activeSocials();
+const year = new Date().getFullYear();
+
+const addressParts = [
+  site.address.line1,
+  site.address.line2,
+  site.address.town,
+  site.address.postcode,
+].filter(Boolean);
+---
+
+<footer class="site-footer">
+  <div class="wrap site-footer__grid">
+    <div class="site-footer__col">
+      <h2 class="site-footer__brand">{site.name}</h2>
+      <p class="site-footer__descriptor">{site.descriptor}</p>
+      <p class="site-footer__area">
+        Event decor hire across {site.serviceArea}.
+      </p>
+    </div>
+
+    <div class="site-footer__col">
+      <h3 class="site-footer__heading">Visit &amp; contact</h3>
+      <address class="site-footer__address">
+        {addressParts.map((part) => <span><Value value={part} /></span>)}
+      </address>
+      <p class="site-footer__line">
+        <span class="site-footer__label">Phone</span>
+        <Value
+          value={site.phone}
+          href={isPlaceholder(site.phoneHref) ? undefined : `tel:${site.phoneHref}`}
+        />
+      </p>
+      <p class="site-footer__line">
+        <span class="site-footer__label">Email</span>
+        <Value
+          value={site.email}
+          href={isPlaceholder(site.email) ? undefined : `mailto:${site.email}`}
+        />
+      </p>
+    </div>
+
+    <div class="site-footer__col">
+      <h3 class="site-footer__heading">Opening hours</h3>
+      <dl class="hours">
+        {
+          site.hours.map((h) => (
+            <div class="hours__row">
+              <dt>{h.days}</dt>
+              <dd><Value value={h.time} /></dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+
+    <div class="site-footer__col">
+      <h3 class="site-footer__heading">Hire</h3>
+      <ul class="site-footer__links">
+        {categories.map((c) => <li><a href={`/${c.slug}`}>{c.title}</a></li>)}
+        <li><a href="/price-list">Price List</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+
+      {
+        socials.length > 0 && (
+          <>
+            <h3 class="site-footer__heading site-footer__heading--spaced">Follow</h3>
+            <ul class="site-footer__socials">
+              {socials.map((s) => (
+                <li>
+                  <a href={s.url} rel="me noopener" target="_blank">
+                    {s.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </>
+        )
+      }
+    </div>
+  </div>
+
+  <div class="wrap site-footer__base">
+    <p>&copy; {year} {site.name}. All rights reserved.</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--navy);
+    color: #c3d0da;
+    padding-top: 3rem;
+    font-size: 0.92rem;
+  }
+
+  .site-footer a {
+    color: #c3d0da;
+    text-decoration: none;
+  }
+
+  .site-footer a:hover {
+    color: var(--white);
+    text-decoration: underline;
+  }
+
+  .site-footer__grid {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: 1fr;
+    padding-bottom: 2.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .site-footer__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1000px) {
+    .site-footer__grid {
+      grid-template-columns: 1.4fr 1fr 1fr 1fr;
+      gap: 2.5rem;
+    }
+  }
+
+  .site-footer__brand {
+    font-size: 1.5rem;
+    color: var(--white);
+    margin: 0;
+  }
+
+  .site-footer__descriptor {
+    font-size: 0.66rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--teal-light);
+    margin: 0.2rem 0 0.9rem;
+  }
+
+  .site-footer__area {
+    max-width: 34ch;
+    margin: 0;
+  }
+
+  .site-footer__heading {
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--white);
+    margin: 0 0 0.9rem;
+  }
+
+  .site-footer__heading--spaced {
+    margin-top: 1.5rem;
+  }
+
+  .site-footer__address {
+    font-style: normal;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .site-footer__line {
+    margin: 0 0 0.4rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .site-footer__label {
+    color: #8ba3b4;
+    min-width: 3.2rem;
+  }
+
+  .hours {
+    margin: 0;
+  }
+
+  .hours__row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding-block: 0.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+  }
+
+  .hours dt {
+    color: #8ba3b4;
+  }
+
+  .hours dd {
+    margin: 0;
+    text-align: right;
+  }
+
+  .site-footer__links,
+  .site-footer__socials {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .site-footer__socials {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .site-footer__base {
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    padding-block: 1.25rem;
+    font-size: 0.82rem;
+    color: #8ba3b4;
+  }
+
+  .site-footer__base p {
+    margin: 0;
+  }
+</style>

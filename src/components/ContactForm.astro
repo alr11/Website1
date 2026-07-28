@@ -1,0 +1,424 @@
+---
+/**
+ * ContactForm
+ * ---------------------------------------------------------------------------
+ * Backend-agnostic. Validation runs entirely client-side; submission POSTs
+ * JSON to whatever URL you put in `site.formEndpoint`.
+ *
+ * While `formEndpoint` is empty the form still validates, but on submit it
+ * tells the visitor to phone or email instead. It will NEVER show a fake
+ * "message sent" confirmation for a message that went nowhere.
+ *
+ * To connect it: set formEndpoint in src/data/site.ts to a handler URL
+ * (Formspree, Basin, Netlify Forms, an API route — anything accepting a JSON
+ * POST). No other change needed.
+ */
+import { site, isPlaceholder } from '../data/site';
+import { packages } from '../data/packages';
+
+const endpoint = site.formEndpoint;
+const emailReady = !isPlaceholder(site.email);
+const phoneReady = !isPlaceholder(site.phone);
+---
+
+<form class="cform" novalidate data-contact-form data-endpoint={endpoint}>
+  <div class="cform__row">
+    <div class="field">
+      <label for="cf-name">Your name <span class="req" aria-hidden="true">*</span></label>
+      <input
+        type="text"
+        id="cf-name"
+        name="name"
+        autocomplete="name"
+        required
+        aria-describedby="cf-name-error"
+      />
+      <p class="field__error" id="cf-name-error" data-error-for="name" hidden></p>
+    </div>
+
+    <div class="field">
+      <label for="cf-email">Email address <span class="req" aria-hidden="true">*</span></label>
+      <input
+        type="email"
+        id="cf-email"
+        name="email"
+        autocomplete="email"
+        required
+        aria-describedby="cf-email-error"
+      />
+      <p class="field__error" id="cf-email-error" data-error-for="email" hidden></p>
+    </div>
+  </div>
+
+  <div class="cform__row">
+    <div class="field">
+      <label for="cf-phone">Phone number</label>
+      <input
+        type="tel"
+        id="cf-phone"
+        name="phone"
+        autocomplete="tel"
+        aria-describedby="cf-phone-error"
+      />
+      <p class="field__error" id="cf-phone-error" data-error-for="phone" hidden></p>
+    </div>
+
+    <div class="field">
+      <label for="cf-date">Event date</label>
+      <input type="date" id="cf-date" name="eventDate" aria-describedby="cf-date-error" />
+      <p class="field__error" id="cf-date-error" data-error-for="eventDate" hidden></p>
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="cf-interest">What are you interested in?</label>
+    <select id="cf-interest" name="interest">
+      <option value="">Not sure yet / general enquiry</option>
+      {packages.map((p) => <option value={p.title}>{p.title}</option>)}
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="cf-message">
+      Tell us about your event <span class="req" aria-hidden="true">*</span>
+    </label>
+    <textarea
+      id="cf-message"
+      name="message"
+      rows="6"
+      required
+      placeholder="Venue, guest numbers, colour scheme, anything you already have in mind…"
+      aria-describedby="cf-message-error"></textarea>
+    <p class="field__error" id="cf-message-error" data-error-for="message" hidden></p>
+  </div>
+
+  {/* Honeypot — hidden from people, often filled in by bots. */}
+  <div class="cform__hp" aria-hidden="true">
+    <label for="cf-company">Company (leave blank)</label>
+    <input type="text" id="cf-company" name="company" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <button class="btn btn--primary cform__submit" type="submit">Send enquiry</button>
+
+  <p
+    class="cform__status"
+    data-form-status
+    role="status"
+    aria-live="polite"
+    hidden
+  >
+  </p>
+
+  {
+    !endpoint && (
+      <p class="cform__notice">
+        <strong>Setup note (visible to you, and to visitors — remove once done):</strong> this
+        form is not connected to a mail handler yet, so it cannot deliver messages. Set
+        <code>formEndpoint</code> in <code>src/data/site.ts</code> to switch it on. Until then
+        the form asks visitors to call or email instead of pretending to send.
+      </p>
+    )
+  }
+</form>
+
+<script
+  is:inline
+  define:vars={{ emailReady, phoneReady, emailAddr: site.email, phoneNum: site.phone }}
+>
+  (function () {
+    const form = document.querySelector('[data-contact-form]');
+    if (!form) return;
+
+    const status = form.querySelector('[data-form-status]');
+    const submit = form.querySelector('.cform__submit');
+    const endpoint = form.dataset.endpoint || '';
+
+    const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    // Permissive on formatting, strict on content: digits, spaces, + ( ) -
+    const PHONE_RE = /^[+()\d][\s\-()\d]{7,19}$/;
+
+    const rules = {
+      name: (v) => {
+        if (!v.trim()) return 'Please enter your name.';
+        if (v.trim().length < 2) return 'Please enter your full name.';
+        return '';
+      },
+      email: (v) => {
+        if (!v.trim()) return 'Please enter your email address.';
+        if (!EMAIL_RE.test(v.trim())) return 'Please enter a valid email address.';
+        return '';
+      },
+      phone: (v) => {
+        if (!v.trim()) return ''; // optional
+        if (!PHONE_RE.test(v.trim())) return 'Please enter a valid phone number.';
+        return '';
+      },
+      eventDate: (v) => {
+        if (!v) return ''; // optional
+        const picked = new Date(v + 'T00:00:00');
+        if (Number.isNaN(picked.getTime())) return 'Please enter a valid date.';
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (picked < today) return 'Please choose a date in the future.';
+        return '';
+      },
+      message: (v) => {
+        if (!v.trim()) return 'Please tell us a little about your event.';
+        if (v.trim().length < 10) return 'Please add a bit more detail.';
+        return '';
+      },
+    };
+
+    const fieldEl = (name) => form.querySelector('[name="' + name + '"]');
+    const errorEl = (name) => form.querySelector('[data-error-for="' + name + '"]');
+
+    function showError(name, message) {
+      const input = fieldEl(name);
+      const err = errorEl(name);
+      if (!input || !err) return;
+
+      if (message) {
+        err.textContent = message;
+        err.hidden = false;
+        input.setAttribute('aria-invalid', 'true');
+      } else {
+        err.textContent = '';
+        err.hidden = true;
+        input.removeAttribute('aria-invalid');
+      }
+    }
+
+    function validateField(name) {
+      const input = fieldEl(name);
+      if (!input) return true;
+      const message = rules[name](input.value);
+      showError(name, message);
+      return !message;
+    }
+
+    // Validate on blur, and clear errors as the visitor corrects them.
+    Object.keys(rules).forEach((name) => {
+      const input = fieldEl(name);
+      if (!input) return;
+      input.addEventListener('blur', () => validateField(name));
+      input.addEventListener('input', () => {
+        if (input.getAttribute('aria-invalid') === 'true') validateField(name);
+      });
+    });
+
+    function setStatus(message, kind) {
+      if (!status) return;
+      status.textContent = message;
+      status.dataset.kind = kind;
+      status.hidden = false;
+    }
+
+    form.addEventListener('submit', async function (event) {
+      event.preventDefault();
+
+      const names = Object.keys(rules);
+      const firstInvalid = names.find((name) => !validateField(name));
+
+      if (firstInvalid) {
+        setStatus('Please fix the highlighted fields and try again.', 'error');
+        const input = fieldEl(firstInvalid);
+        if (input) input.focus();
+        return;
+      }
+
+      // Honeypot: silently succeed-looking no-op for bots.
+      const hp = form.querySelector('[name="company"]');
+      if (hp && hp.value) return;
+
+      const data = Object.fromEntries(new FormData(form).entries());
+      delete data.company;
+
+      if (!endpoint) {
+        const fallbacks = [];
+        if (phoneReady) fallbacks.push('call ' + phoneNum);
+        if (emailReady) fallbacks.push('email ' + emailAddr);
+        setStatus(
+          fallbacks.length
+            ? 'This form is not connected yet, so your message was not sent. Please ' +
+                fallbacks.join(' or ') +
+                ' instead.'
+            : 'This form is not connected yet, so your message was not sent. Please use the contact details on this page.',
+          'error',
+        );
+        return;
+      }
+
+      submit.disabled = true;
+      const original = submit.textContent;
+      submit.textContent = 'Sending…';
+      setStatus('Sending your enquiry…', 'pending');
+
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify(data),
+        });
+
+        if (!response.ok) throw new Error('Request failed: ' + response.status);
+
+        form.reset();
+        setStatus(
+          'Thank you — your enquiry has been sent. We will get back to you as soon as we can.',
+          'success',
+        );
+      } catch (error) {
+        const fallbacks = [];
+        if (phoneReady) fallbacks.push('call ' + phoneNum);
+        if (emailReady) fallbacks.push('email ' + emailAddr);
+        setStatus(
+          'Sorry — your enquiry could not be sent' +
+            (fallbacks.length ? '. Please ' + fallbacks.join(' or ') + '.' : '. Please try again shortly.'),
+          'error',
+        );
+      } finally {
+        submit.disabled = false;
+        submit.textContent = original;
+      }
+    });
+  })();
+</script>
+
+<style>
+  .cform {
+    display: flex;
+    flex-direction: column;
+    gap: 1.15rem;
+  }
+
+  .cform__row {
+    display: grid;
+    gap: 1.15rem;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 620px) {
+    .cform__row {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .field label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--navy);
+  }
+
+  .req {
+    color: var(--flag);
+  }
+
+  .field input,
+  .field select,
+  .field textarea {
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--ink);
+    background: var(--white);
+    padding: 0.7rem 0.85rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    width: 100%;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .field textarea {
+    resize: vertical;
+    min-height: 8rem;
+  }
+
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    border-color: var(--teal);
+    outline: none;
+    box-shadow: 0 0 0 3px var(--teal-wash);
+  }
+
+  .field input[aria-invalid='true'],
+  .field textarea[aria-invalid='true'] {
+    border-color: var(--flag);
+    background: var(--flag-wash);
+  }
+
+  .field__error {
+    margin: 0;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--flag);
+  }
+
+  .cform__hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .cform__submit {
+    align-self: flex-start;
+    min-width: 12rem;
+  }
+
+  .cform__submit:disabled {
+    opacity: 0.65;
+    cursor: progress;
+  }
+
+  .cform__status {
+    margin: 0;
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius);
+    font-size: 0.92rem;
+    font-weight: 500;
+    border: 1px solid;
+  }
+
+  .cform__status[data-kind='error'] {
+    background: var(--flag-wash);
+    border-color: #e8c4b8;
+    color: #8c3421;
+  }
+
+  .cform__status[data-kind='success'] {
+    background: #ecf7ef;
+    border-color: #bfe0c8;
+    color: #1f6135;
+  }
+
+  .cform__status[data-kind='pending'] {
+    background: var(--teal-wash);
+    border-color: #b9dbe6;
+    color: var(--navy);
+  }
+
+  .cform__notice {
+    margin: 0;
+    padding: 0.85rem 1rem;
+    background: var(--flag-wash);
+    border: 1px dashed var(--flag);
+    border-radius: var(--radius);
+    font-size: 0.85rem;
+    color: #8c3421;
+    line-height: 1.5;
+  }
+
+  .cform__notice code {
+    font-size: 0.9em;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 0.1em 0.35em;
+    border-radius: 3px;
+  }
+</style>

@@ -1,0 +1,92 @@
+---
+/**
+ * TrustedBy
+ * ---------------------------------------------------------------------------
+ * Renders NOTHING unless you have added real logos to `site.trustedBy` in
+ * src/data/site.ts. No awards, press mentions or partners are invented — the
+ * whole section is simply absent until you supply the files.
+ */
+import { site } from '../data/site';
+import SmartImage from './SmartImage.astro';
+
+const logos = site.trustedBy;
+---
+
+{
+  logos.length > 0 && (
+    <section class="section trusted" aria-labelledby="trusted-heading">
+      <div class="wrap">
+        <h2 id="trusted-heading" class="trusted__heading">
+          Featured in &amp; trusted by
+        </h2>
+        <ul class="trusted__list">
+          {logos.map((logo) => (
+            <li class="trusted__item">
+              {logo.url ? (
+                <a href={logo.url} target="_blank" rel="noopener">
+                  <SmartImage
+                    src={`/images/logos/${logo.file}`}
+                    alt={logo.name}
+                    ratio="3 / 2"
+                  />
+                </a>
+              ) : (
+                <SmartImage
+                  src={`/images/logos/${logo.file}`}
+                  alt={logo.name}
+                  ratio="3 / 2"
+                />
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .trusted {
+    background: var(--white);
+    border-block: 1px solid var(--line);
+    padding-block: 2.25rem;
+  }
+
+  .trusted__heading {
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    text-align: center;
+    margin: 0 0 1.5rem;
+  }
+
+  .trusted__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem 2.5rem;
+  }
+
+  .trusted__item {
+    width: 110px;
+    filter: grayscale(1);
+    opacity: 0.7;
+    transition: filter 0.2s ease, opacity 0.2s ease;
+  }
+
+  .trusted__item:hover {
+    filter: grayscale(0);
+    opacity: 1;
+  }
+
+  .trusted__item :global(.smart-img) {
+    object-fit: contain;
+  }
+</style>

@@ -1,0 +1,235 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SmartImage from '../../components/SmartImage.astro';
+import PackageCard from '../../components/PackageCard.astro';
+import Value from '../../components/Value.astro';
+import {
+  packages,
+  getCategory,
+  packagesIn,
+  packagePhotos,
+  type Category,
+  type Package,
+} from '../../data/packages';
+import { site, isPlaceholder } from '../../data/site';
+
+export function getStaticPaths() {
+  return packages.map((pkg) => {
+    const category = getCategory(pkg.category)!;
+    const related = packagesIn(pkg.category).filter((p) => p.slug !== pkg.slug).slice(0, 3);
+    return {
+      params: { category: pkg.category, pkg: pkg.slug },
+      props: { pkg, category, related },
+    };
+  });
+}
+
+interface Props {
+  pkg: Package;
+  category: Category;
+  related: Package[];
+}
+
+const { pkg, category, related } = Astro.props;
+const photos = packagePhotos(pkg);
+const [cover, ...rest] = photos;
+const description = `${pkg.title} — ${pkg.summary} Event decor hire in ${site.serviceArea}.`;
+---
+
+<BaseLayout title={pkg.title} description={description}>
+  <nav class="crumbs wrap" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="/">Home</a></li>
+      <li><a href={`/${category.slug}`}>{category.title}</a></li>
+      <li aria-current="page">{pkg.title}</li>
+    </ol>
+  </nav>
+
+  <article class="pkg">
+    <div class="wrap pkg__grid">
+      <!-- ------------------------------------------------------ gallery -->
+      <div class="pkg__gallery">
+        <SmartImage src={cover} alt={`${pkg.title} — main photograph`} ratio="4 / 3" loading="eager" />
+        {
+          rest.length > 0 && (
+            <div class="pkg__thumbs">
+              {rest.map((photo, i) => (
+                <SmartImage src={photo} alt={`${pkg.title} — photograph ${i + 2}`} ratio="1 / 1" />
+              ))}
+            </div>
+          )
+        }
+      </div>
+
+      <!-- --------------------------------------------------------- detail -->
+      <div class="pkg__detail">
+        <p class="eyebrow">{category.title}</p>
+        <h1>{pkg.title}</h1>
+
+        <div class="pkg__price">
+          <span class="pkg__price-label">Price</span>
+          <span class="pkg__price-value"><Value value={pkg.price} /></span>
+          <span class="pkg__price-period">
+            Hire period: <Value value={pkg.hirePeriod} />
+          </span>
+        </div>
+
+        {pkg.description.map((para) => <p>{para}</p>)}
+
+        <h2 class="pkg__subhead">What's included</h2>
+        <ul class="pkg__includes">
+          {
+            pkg.includes.map((item) => (
+              <li>
+                <Value value={item} />
+              </li>
+            ))
+          }
+        </ul>
+
+        <div class="pkg__enquire">
+          <h2 class="pkg__subhead">Check availability</h2>
+          <p>
+            Availability is confirmed per date. Send us your date and venue and we will
+            come back to you with a quote.
+          </p>
+          <div class="btn-row">
+            <a class="btn btn--primary" href="/contact">Enquire about this package</a>
+          </div>
+          <p class="pkg__direct">
+            Or contact us directly &mdash;
+            <Value
+              value={site.phone}
+              href={isPlaceholder(site.phoneHref) ? undefined : `tel:${site.phoneHref}`}
+            />
+            &middot;
+            <Value
+              value={site.email}
+              href={isPlaceholder(site.email) ? undefined : `mailto:${site.email}`}
+            />
+          </p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  {
+    related.length > 0 && (
+      <section class="section section--tint" aria-labelledby="related-heading">
+        <div class="wrap">
+          <div class="section-head">
+            <p class="eyebrow">More from this range</p>
+            <h2 id="related-heading">Other {category.title.toLowerCase()}</h2>
+          </div>
+          <div class="grid grid--3">
+            {related.map((item) => (
+              <PackageCard pkg={item} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+</BaseLayout>
+
+<style>
+  .pkg {
+    padding-block: 1.5rem 3rem;
+  }
+
+  .pkg__grid {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 900px) {
+    .pkg {
+      padding-block: 2rem 4rem;
+    }
+    .pkg__grid {
+      grid-template-columns: 1.05fr 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+  }
+
+  .pkg__gallery :global(.smart-img),
+  .pkg__gallery :global(.img-ph) {
+    border-radius: var(--radius);
+  }
+
+  .pkg__thumbs {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+  }
+
+  .pkg__detail h1 {
+    margin-bottom: 1rem;
+  }
+
+  .pkg__price {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 1rem;
+    padding: 1rem 1.15rem;
+    background: var(--teal-wash);
+    border-radius: var(--radius);
+    margin-bottom: 1.5rem;
+  }
+
+  .pkg__price-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--teal);
+    width: 100%;
+  }
+
+  .pkg__price-value {
+    font-family: var(--font-display);
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: var(--navy);
+  }
+
+  .pkg__price-period {
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+  }
+
+  .pkg__subhead {
+    font-size: 1.2rem;
+    margin-top: 1.75rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .pkg__includes {
+    margin: 0 0 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-left: 1.1rem;
+  }
+
+  .pkg__enquire {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .pkg__direct {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+  }
+
+  .section-head {
+    max-width: 60ch;
+    margin-bottom: 2rem;
+  }
+</style>
