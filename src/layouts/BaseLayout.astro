@@ -30,7 +30,8 @@ const fullTitle = title === 'home' ? site.titleSuffix : `${title} | ${site.title
     */}
     <meta name="robots" content="noindex, nofollow" />
     <link rel="canonical" href={canonical.href} />
-    <link rel="icon" href={url("/images/favicon.png")} />
+    {/* Uses the logo until a dedicated square favicon.png is supplied. */}
+    <link rel="icon" href={url("/images/logo.jpg")} />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.name} />

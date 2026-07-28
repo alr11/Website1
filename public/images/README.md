@@ -14,7 +14,9 @@ site comes from a file you put here.
 
 - **All lowercase**, words separated by hyphens. `flower-wall-1.jpg`, not
   `Flower Wall 1.JPG`.
-- Photos: `.jpg`. Logos: `.png` (transparent background).
+- Photos: `.jpg` — but `.png`, `.webp` and `.avif` also work. The site matches
+  on the name before the dot, so `entrance-walkway-1.png` fills the
+  `entrance-walkway-1.jpg` slot just fine. Screenshots (usually `.png`) are OK.
 - Resize before uploading — see sizes below. Straight-from-phone photos are
   ~5 MB each and will make the site slow.
 
@@ -34,6 +36,10 @@ site comes from a file you put here.
 > something that isn't busy in that corner.
 
 ## 2. Category tiles — `/public/images/categories/`
+
+**Optional.** If a category has no image of its own, it automatically borrows
+the first available photo from one of its packages — so these are only worth
+adding when you want to control exactly which shot represents a category.
 
 One photo per category, **square (1:1), 1200 × 1200 px**.
 

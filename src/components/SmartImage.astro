@@ -25,6 +25,8 @@ interface Props {
   loading?: 'lazy' | 'eager';
   class?: string;
   sizes?: string;
+  /** Path(s) to try, in order, when `src` has not been uploaded yet. */
+  fallback?: string | string[];
 }
 
 const {
@@ -34,14 +36,42 @@ const {
   loading = 'lazy',
   class: className = '',
   sizes,
+  fallback,
 } = Astro.props;
 
-let exists = false;
-try {
-  exists = fs.existsSync(path.join(process.cwd(), 'public', src));
-} catch {
-  exists = false;
+/**
+ * Resolve a requested path against /public, tolerating a different image
+ * extension. The owner uploads straight from a phone or a screenshot, so a
+ * slot documented as ".jpg" may arrive as ".png" — matching on the base name
+ * means those files still get picked up instead of silently showing a
+ * placeholder.
+ */
+const EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp', '.avif'];
+
+function resolveInPublic(candidate: string): string | null {
+  const root = path.join(process.cwd(), 'public');
+  const dot = candidate.lastIndexOf('.');
+  const base = dot > -1 ? candidate.slice(0, dot) : candidate;
+  const tries = [candidate, ...EXTENSIONS.map((e) => base + e)];
+
+  for (const t of tries) {
+    try {
+      if (fs.existsSync(path.join(root, t))) return t;
+    } catch {
+      /* ignore and keep trying */
+    }
+  }
+  return null;
 }
+
+const fallbacks = fallback ? (Array.isArray(fallback) ? fallback : [fallback]) : [];
+
+let resolved = resolveInPublic(src);
+for (const alt of fallbacks) {
+  if (resolved) break;
+  resolved = resolveInPublic(alt);
+}
+const exists = resolved !== null;
 
 const label = src.replace(/^\/images\//, '');
 ---
@@ -49,7 +79,7 @@ const label = src.replace(/^\/images\//, '');
 {
   exists ? (
     <img
-      src={url(src)}
+      src={url(resolved!)}
       alt={alt}
       loading={loading}
       decoding="async"

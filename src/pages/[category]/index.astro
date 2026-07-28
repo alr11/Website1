@@ -2,7 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PackageCard from '../../components/PackageCard.astro';
 import SmartImage from '../../components/SmartImage.astro';
-import { categories, packagesIn, type Category, type Package } from '../../data/packages';
+import { categories, packagesIn, packagePhotos, type Category, type Package } from '../../data/packages';
 import { site } from '../../data/site';
 
 import { url } from '../../lib/url';
@@ -19,6 +19,7 @@ interface Props {
 }
 
 const { category, items } = Astro.props;
+const heroFallback = items.map((i) => packagePhotos(i)[0]);
 const description = `${category.title.toLowerCase()} hire in ${site.serviceArea}. ${category.tagline}`;
 ---
 
@@ -47,6 +48,7 @@ const description = `${category.title.toLowerCase()} hire in ${site.serviceArea}
           alt={category.title}
           ratio="3 / 4"
           loading="eager"
+          fallback={heroFallback}
         />
       </div>
     </div>

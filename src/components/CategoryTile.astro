@@ -1,6 +1,6 @@
 ---
 import type { Category } from '../data/packages';
-import { packagesIn } from '../data/packages';
+import { packagesIn, packagePhotos } from '../data/packages';
 import SmartImage from './SmartImage.astro';
 
 import { url } from '../lib/url';
@@ -9,7 +9,9 @@ interface Props {
 }
 
 const { category } = Astro.props;
-const count = packagesIn(category.slug).length;
+const items = packagesIn(category.slug);
+const count = items.length;
+const fallback = items.map((i) => packagePhotos(i)[0]);
 ---
 
 <a class="tile" href={url(`/${category.slug}`)}>
@@ -18,6 +20,7 @@ const count = packagesIn(category.slug).length;
       src={`/images/categories/${category.slug}.jpg`}
       alt={category.title}
       ratio="1 / 1"
+      fallback={fallback}
     />
   </span>
   <span class="tile__body">
