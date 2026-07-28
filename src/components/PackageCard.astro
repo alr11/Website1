@@ -4,17 +4,18 @@ import { packagePhotos, packageUrl } from '../data/packages';
 import SmartImage from './SmartImage.astro';
 import Value from './Value.astro';
 
+import { url } from '../lib/url';
 interface Props {
   pkg: Package;
 }
 
 const { pkg } = Astro.props;
 const cover = packagePhotos(pkg)[0];
-const url = packageUrl(pkg);
+const href = url(packageUrl(pkg));
 ---
 
 <article class="pkg-card">
-  <a class="pkg-card__link" href={url}>
+  <a class="pkg-card__link" href={href}>
     <SmartImage src={cover} alt={pkg.title} ratio="1 / 1" />
     <div class="pkg-card__body">
       <h3 class="pkg-card__title">{pkg.title}</h3>

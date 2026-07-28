@@ -4,6 +4,7 @@ import ContactForm from '../components/ContactForm.astro';
 import Value from '../components/Value.astro';
 import { site, isPlaceholder, activeSocials } from '../data/site';
 
+import { url } from '../lib/url';
 const description = `Contact ${site.name} for event decor hire in ${site.serviceArea}. Send an enquiry with your date and venue for a quote.`;
 
 const socials = activeSocials();
@@ -18,7 +19,7 @@ const addressParts = [
 <BaseLayout title="Contact" description={description}>
   <nav class="crumbs wrap" aria-label="Breadcrumb">
     <ol>
-      <li><a href="/">Home</a></li>
+      <li><a href={url("/")}>Home</a></li>
       <li aria-current="page">Contact</li>
     </ol>
   </nav>

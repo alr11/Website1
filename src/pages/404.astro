@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { categories } from '../data/packages';
+
+import { url } from '../lib/url';
 ---
 
 <BaseLayout title="Page not found" description="The page you were looking for could not be found.">
@@ -12,10 +14,10 @@ import { categories } from '../data/packages';
         The link may be out of date, or the page may have moved. Here is where to go next.
       </p>
       <ul class="notfound__links">
-        <li><a href="/">Home</a></li>
-        {categories.map((c) => <li><a href={`/${c.slug}`}>{c.title}</a></li>)}
-        <li><a href="/price-list">Price List</a></li>
-        <li><a href="/contact">Contact</a></li>
+        <li><a href={url("/")}>Home</a></li>
+        {categories.map((c) => <li><a href={url(`/${c.slug}`)}>{c.title}</a></li>)}
+        <li><a href={url("/price-list")}>Price List</a></li>
+        <li><a href={url("/contact")}>Contact</a></li>
       </ul>
     </div>
   </section>

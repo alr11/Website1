@@ -3,6 +3,7 @@ import type { Category } from '../data/packages';
 import { packagesIn } from '../data/packages';
 import SmartImage from './SmartImage.astro';
 
+import { url } from '../lib/url';
 interface Props {
   category: Category;
 }
@@ -11,7 +12,7 @@ const { category } = Astro.props;
 const count = packagesIn(category.slug).length;
 ---
 
-<a class="tile" href={`/${category.slug}`}>
+<a class="tile" href={url(`/${category.slug}`)}>
   <span class="tile__media">
     <SmartImage
       src={`/images/categories/${category.slug}.jpg`}

@@ -13,6 +13,7 @@ import {
 } from '../../data/packages';
 import { site, isPlaceholder } from '../../data/site';
 
+import { url } from '../../lib/url';
 export function getStaticPaths() {
   return packages.map((pkg) => {
     const category = getCategory(pkg.category)!;
@@ -39,8 +40,8 @@ const description = `${pkg.title} — ${pkg.summary} Event decor hire in ${site.
 <BaseLayout title={pkg.title} description={description}>
   <nav class="crumbs wrap" aria-label="Breadcrumb">
     <ol>
-      <li><a href="/">Home</a></li>
-      <li><a href={`/${category.slug}`}>{category.title}</a></li>
+      <li><a href={url("/")}>Home</a></li>
+      <li><a href={url(`/${category.slug}`)}>{category.title}</a></li>
       <li aria-current="page">{pkg.title}</li>
     </ol>
   </nav>
@@ -94,7 +95,7 @@ const description = `${pkg.title} — ${pkg.summary} Event decor hire in ${site.
             come back to you with a quote.
           </p>
           <div class="btn-row">
-            <a class="btn btn--primary" href="/contact">Enquire about this package</a>
+            <a class="btn btn--primary" href={url("/contact")}>Enquire about this package</a>
           </div>
           <p class="pkg__direct">
             Or contact us directly &mdash;

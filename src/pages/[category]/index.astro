@@ -5,6 +5,7 @@ import SmartImage from '../../components/SmartImage.astro';
 import { categories, packagesIn, type Category, type Package } from '../../data/packages';
 import { site } from '../../data/site';
 
+import { url } from '../../lib/url';
 export function getStaticPaths() {
   return categories.map((category) => ({
     params: { category: category.slug },
@@ -24,7 +25,7 @@ const description = `${category.title.toLowerCase()} hire in ${site.serviceArea}
 <BaseLayout title={category.title} description={description}>
   <nav class="crumbs wrap" aria-label="Breadcrumb">
     <ol>
-      <li><a href="/">Home</a></li>
+      <li><a href={url("/")}>Home</a></li>
       <li aria-current="page">{category.title}</li>
     </ol>
   </nav>
@@ -36,8 +37,8 @@ const description = `${category.title.toLowerCase()} hire in ${site.serviceArea}
         <h1>{category.title}</h1>
         <p class="lede">{category.intro}</p>
         <div class="btn-row">
-          <a class="btn btn--primary" href="/contact">Enquire about your date</a>
-          <a class="btn btn--ghost" href="/price-list">See all prices</a>
+          <a class="btn btn--primary" href={url("/contact")}>Enquire about your date</a>
+          <a class="btn btn--ghost" href={url("/price-list")}>See all prices</a>
         </div>
       </div>
       <div class="cat-hero__media">
@@ -71,7 +72,7 @@ const description = `${category.title.toLowerCase()} hire in ${site.serviceArea}
         for it.
       </p>
       <div class="btn-row">
-        <a class="btn btn--primary" href="/contact">Ask a question</a>
+        <a class="btn btn--primary" href={url("/contact")}>Ask a question</a>
       </div>
     </div>
   </section>

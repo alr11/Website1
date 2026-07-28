@@ -3,6 +3,7 @@ import { site } from '../data/site';
 import { categories } from '../data/packages';
 import SmartImage from './SmartImage.astro';
 
+import { url } from '../lib/url';
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 
 const links = [
@@ -18,7 +19,7 @@ const isCurrent = (href: string) =>
 
 <header class="site-header">
   <div class="wrap site-header__inner">
-    <a class="brand" href="/">
+    <a class="brand" href={url("/")}>
       <span class="brand__logo">
         <SmartImage src="/images/logo.png" alt={`${site.name} logo`} ratio="1 / 1" loading="eager" />
       </span>
@@ -45,7 +46,7 @@ const isCurrent = (href: string) =>
           links.map((link) => (
             <li>
               <a
-                href={link.href}
+                href={url(link.href)}
                 class="nav__link"
                 aria-current={isCurrent(link.href) ? 'page' : undefined}
               >
@@ -55,7 +56,7 @@ const isCurrent = (href: string) =>
           ))
         }
         <li class="nav__cta">
-          <a class="btn btn--primary" href="/contact">Enquire</a>
+          <a class="btn btn--primary" href={url("/contact")}>Enquire</a>
         </li>
       </ul>
     </nav>

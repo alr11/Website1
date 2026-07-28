@@ -4,6 +4,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 
+import { url } from '../lib/url';
 interface Props {
   title: string;
   description: string;
@@ -20,15 +21,23 @@ const fullTitle = title === 'home' ? site.titleSuffix : `${title} | ${site.title
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
+
+    {/*
+      ⚠️ REMOVE THIS LINE WHEN YOU ARE READY TO BE FOUND ON GOOGLE.
+      While prices and contact details are still [PLACEHOLDER]s, being indexed
+      would put a half-finished page in search results — and that is slow and
+      awkward to undo. Delete the tag below, and update public/robots.txt.
+    */}
+    <meta name="robots" content="noindex, nofollow" />
     <link rel="canonical" href={canonical.href} />
-    <link rel="icon" href="/images/favicon.png" />
+    <link rel="icon" href={url("/images/favicon.png")} />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.name} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical.href} />
-    <meta property="og:image" content={new URL('/images/og-image.jpg', canonical).href} />
+    <meta property="og:image" content={new URL(url('/images/og-image.jpg'), canonical).href} />
     <meta name="twitter:card" content="summary_large_image" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />

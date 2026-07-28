@@ -7,6 +7,7 @@ import Value from '../components/Value.astro';
 import { site, isPlaceholder } from '../data/site';
 import { categories } from '../data/packages';
 
+import { url } from '../lib/url';
 const description = `Event decoration hire in ${site.serviceArea}. Wedding and party styling, backdrops, balloon displays, venue packages and add-on rentals — delivered, set up and collected.`;
 ---
 
@@ -30,8 +31,8 @@ const description = `Event decoration hire in ${site.serviceArea}. Wedding and p
           birthdays and celebrations. Delivered, installed and collected by us.
         </p>
         <div class="btn-row">
-          <a class="btn btn--primary" href="/contact">Check your date</a>
-          <a class="btn btn--on-dark" href="/price-list">View price list</a>
+          <a class="btn btn--primary" href={url("/contact")}>Check your date</a>
+          <a class="btn btn--on-dark" href={url("/price-list")}>View price list</a>
         </div>
       </div>
     </div>
@@ -58,7 +59,7 @@ const description = `Event decoration hire in ${site.serviceArea}. Wedding and p
         we will point you to the right one.
       </p>
       <div class="btn-row">
-        <a class="btn btn--ghost" href="/contact">Get in touch</a>
+        <a class="btn btn--ghost" href={url("/contact")}>Get in touch</a>
       </div>
     </div>
   </section>
@@ -146,7 +147,7 @@ const description = `Event decoration hire in ${site.serviceArea}. Wedding and p
         </p>
       </div>
       <div class="btn-row">
-        <a class="btn btn--primary" href="/contact">Send an enquiry</a>
+        <a class="btn btn--primary" href={url("/contact")}>Send an enquiry</a>
       </div>
     </div>
   </section>

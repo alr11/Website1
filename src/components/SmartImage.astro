@@ -14,6 +14,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+import { url } from '../lib/url';
 interface Props {
   /** Public path, e.g. "/images/packages/flower-wall-1.jpg" */
   src: string;
@@ -48,7 +49,7 @@ const label = src.replace(/^\/images\//, '');
 {
   exists ? (
     <img
-      src={src}
+      src={url(src)}
       alt={alt}
       loading={loading}
       decoding="async"

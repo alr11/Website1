@@ -3,6 +3,7 @@ import { site, activeSocials, isPlaceholder } from '../data/site';
 import { categories } from '../data/packages';
 import Value from './Value.astro';
 
+import { url } from '../lib/url';
 const socials = activeSocials();
 const year = new Date().getFullYear();
 
@@ -62,9 +63,9 @@ const addressParts = [
     <div class="site-footer__col">
       <h3 class="site-footer__heading">Hire</h3>
       <ul class="site-footer__links">
-        {categories.map((c) => <li><a href={`/${c.slug}`}>{c.title}</a></li>)}
-        <li><a href="/price-list">Price List</a></li>
-        <li><a href="/contact">Contact</a></li>
+        {categories.map((c) => <li><a href={url(`/${c.slug}`)}>{c.title}</a></li>)}
+        <li><a href={url("/price-list")}>Price List</a></li>
+        <li><a href={url("/contact")}>Contact</a></li>
       </ul>
 
       {

@@ -4,6 +4,7 @@ import Value from '../components/Value.astro';
 import { categories, packagesIn, packageUrl, packages } from '../data/packages';
 import { site, isPlaceholder } from '../data/site';
 
+import { url } from '../lib/url';
 const description = `Full price list for ${site.name} event decor hire in ${site.serviceArea} — wedding packages, party hire, baby showers, venue styling and add-on rentals.`;
 
 // True while nothing has been priced yet — drives the notice at the top.
@@ -13,7 +14,7 @@ const anyPriced = packages.some((p) => !isPlaceholder(p.price));
 <BaseLayout title="Price List" description={description}>
   <nav class="crumbs wrap" aria-label="Breadcrumb">
     <ol>
-      <li><a href="/">Home</a></li>
+      <li><a href={url("/")}>Home</a></li>
       <li aria-current="page">Price List</li>
     </ol>
   </nav>
@@ -49,7 +50,7 @@ const anyPriced = packages.some((p) => !isPlaceholder(p.price));
         <section class="price-block" aria-labelledby={`price-${category.slug}`}>
           <div class="price-block__head">
             <h2 id={`price-${category.slug}`}>{category.title}</h2>
-            <a class="price-block__link" href={`/${category.slug}`}>
+            <a class="price-block__link" href={url(`/${category.slug}`)}>
               View range &rarr;
             </a>
           </div>
@@ -67,7 +68,7 @@ const anyPriced = packages.some((p) => !isPlaceholder(p.price));
                 {packagesIn(category.slug).map((pkg) => (
                   <tr>
                     <th scope="row" class="price-row__name">
-                      <a href={packageUrl(pkg)}>{pkg.title}</a>
+                      <a href={url(packageUrl(pkg))}>{pkg.title}</a>
                       <span class="price-row__summary">{pkg.summary}</span>
                     </th>
                     <td>
@@ -112,7 +113,7 @@ const anyPriced = packages.some((p) => !isPlaceholder(p.price));
       </ul>
 
       <div class="btn-row">
-        <a class="btn btn--primary" href="/contact">Request a quote</a>
+        <a class="btn btn--primary" href={url("/contact")}>Request a quote</a>
       </div>
     </div>
   </section>

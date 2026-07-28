@@ -1,5 +1,10 @@
+# The site is still being filled in (placeholder prices and contact details),
+# so search engines are blocked for now.
+#
+# WHEN YOU ARE READY TO GO LIVE:
+#   1. replace the two lines below with:  User-agent: *
+#                                         Allow: /
+#   2. remove the <meta name="robots" content="noindex, nofollow" /> tag
+#      from src/layouts/BaseLayout.astro
 User-agent: *
-Allow: /
-
-# Update this once the real domain is live.
-Sitemap: https://example.com/sitemap.xml
+Disallow: /
