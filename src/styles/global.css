@@ -269,7 +269,7 @@ ul {
 
 /* Marks any value the owner still has to fill in. */
 .ph {
-  display: inline-block;
+  display: inline;
   background: var(--flag-wash);
   color: var(--flag);
   border: 1px dashed currentColor;
@@ -278,7 +278,10 @@ ul {
   font-size: 0.9em;
   font-weight: 600;
   font-family: var(--font-body);
-  white-space: nowrap;
+  /* Must wrap: some placeholders are long sentences, and nowrap here forced
+     grid tracks wider than a phone screen (horizontal scroll on package
+     pages). Long unbroken values break rather than overflow. */
+  overflow-wrap: anywhere;
 }
 
 /* ------------------------------------------------------------------ grid */
@@ -287,6 +290,12 @@ ul {
   display: grid;
   gap: 1.25rem;
   grid-template-columns: 1fr;
+}
+
+/* Grid and flex children default to min-width:auto, which lets a wide or
+   unbreakable child push its track past the viewport. */
+.grid > * {
+  min-width: 0;
 }
 
 @media (min-width: 600px) {

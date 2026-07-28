@@ -143,6 +143,11 @@ const description = `${pkg.title} — ${pkg.summary} Event decor hire in ${site.
     grid-template-columns: 1fr;
   }
 
+  /* Without this a long unbreakable child widens the track past the viewport. */
+  .pkg__grid > * {
+    min-width: 0;
+  }
+
   @media (min-width: 900px) {
     .pkg {
       padding-block: 2rem 4rem;

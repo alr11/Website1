@@ -171,11 +171,14 @@ const description = `Event decoration hire in ${site.serviceArea}. Wedding and p
     inset: 0;
     display: flex;
     align-items: flex-end;
+    /* Weighted so the text stays readable over ANY photo the owner drops in,
+       including a bright one — the previous top stop was too transparent. */
     background: linear-gradient(
       to top,
-      rgba(10, 26, 39, 0.92) 0%,
-      rgba(10, 26, 39, 0.6) 45%,
-      rgba(10, 26, 39, 0.15) 100%
+      rgba(10, 26, 39, 0.94) 0%,
+      rgba(10, 26, 39, 0.78) 38%,
+      rgba(10, 26, 39, 0.45) 70%,
+      rgba(10, 26, 39, 0.3) 100%
     );
   }
 
@@ -189,7 +192,9 @@ const description = `Event decoration hire in ${site.serviceArea}. Wedding and p
     font-weight: 700;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--teal-light);
+    /* Lightened from --teal-light, which failed contrast against a pale photo. */
+    color: #8fd4e8;
+    text-shadow: 0 1px 3px rgba(10, 26, 39, 0.7);
     margin: 0 0 0.75rem;
   }
 
@@ -197,13 +202,15 @@ const description = `Event decoration hire in ${site.serviceArea}. Wedding and p
     color: var(--white);
     margin: 0 0 0.75rem;
     max-width: 16ch;
+    text-shadow: 0 2px 12px rgba(10, 26, 39, 0.55);
   }
 
   .hero__lede {
-    color: #d5e0e8;
+    color: #e2eaf0;
     font-size: 1.05rem;
     max-width: 52ch;
     margin: 0;
+    text-shadow: 0 1px 6px rgba(10, 26, 39, 0.6);
   }
 
   @media (min-width: 768px) {

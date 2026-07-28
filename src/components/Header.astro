@@ -218,7 +218,7 @@ const isCurrent = (href: string) =>
 
   /* ------------------------------------------------------------- desktop */
 
-  @media (min-width: 1024px) {
+  @media (min-width: 1180px) {
     .nav-toggle {
       display: none;
     }
@@ -239,10 +239,11 @@ const isCurrent = (href: string) =>
     }
 
     .nav__link {
-      padding: 0.4rem 0.6rem;
+      padding: 0.4rem 0.55rem;
       border-bottom: 0;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       border-radius: 6px;
+      white-space: nowrap;
     }
 
     .nav__link:hover {
@@ -283,7 +284,7 @@ const isCurrent = (href: string) =>
     });
 
     // Reset state if the viewport grows past the desktop breakpoint while open.
-    const desktop = window.matchMedia('(min-width: 1024px)');
+    const desktop = window.matchMedia('(min-width: 1180px)');
     desktop.addEventListener('change', (e) => {
       if (e.matches) setOpen(false);
     });
