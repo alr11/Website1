@@ -20,6 +20,10 @@ const description = `Event decoration hire in ${site.serviceArea}. Wedding and p
         alt="An event styled by Nashwyn Art"
         ratio="16 / 9"
         loading="eager"
+        fallback={[
+          '/images/packages/entrance-walkway-1.jpg',
+          '/images/packages/full-venue-styling-1.jpg',
+        ]}
       />
     </div>
     <div class="hero__overlay">
@@ -165,6 +169,10 @@ const description = `Event decoration hire in ${site.serviceArea}. Wedding and p
   .hero__media :global(.img-ph) {
     min-height: 380px;
     max-height: 78vh;
+  }
+
+  .hero__media :global(.smart-img) {
+    object-position: center 28%;
   }
 
   .hero__overlay {
