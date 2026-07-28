@@ -47,7 +47,7 @@ live by accident. Nothing below was invented or guessed.
 
 ### 2. `src/data/packages.ts` — prices and inclusions
 
-For each of the 17 packages:
+For each of the 18 packages:
 
 - `price` — currently `[PRICE]`
 - `hirePeriod` — currently `[HIRE PERIOD]`
@@ -80,10 +80,10 @@ filenames. Short version:
 ```
 public/images/logo.png                              your logo, square
 public/images/favicon.png                           browser tab icon
-public/images/hero.jpg                              homepage banner (16:9)
+public/images/hero.jpg                              homepage banner — landscape 16:9
 public/images/og-image.jpg                          social share preview
-public/images/categories/<category-slug>.jpg        one per category (4:3)
-public/images/packages/<package-slug>-1.jpg         -2, -3 … (4:3)
+public/images/categories/<category-slug>.jpg        one per category, portrait 3:4
+public/images/packages/<package-slug>-1.jpg         -2, -3 … portrait 3:4
 public/images/logos/<logo-name>.png                 only if you have real ones
 ```
 

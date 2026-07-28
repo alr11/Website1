@@ -26,15 +26,20 @@ site comes from a file you put here.
 |---|---|---|
 | `logo.png` | Your logo, square, transparent background | 400 × 400 px |
 | `favicon.png` | Browser tab icon (can be the logo, cropped square) | 64 × 64 px |
-| `hero.jpg` | Big homepage banner photo — pick your strongest wide shot | 2000 × 1125 px (16:9) |
+| `hero.jpg` | Big homepage banner photo — **must be landscape** | 2000 × 1125 px (16:9) |
 | `og-image.jpg` | Preview image when the site is shared on WhatsApp/Facebook | 1200 × 630 px |
 
-> **Hero tip:** text sits over the bottom-left of this image, so choose a photo
-> that isn't busy in that corner.
+> **Hero tip:** this is the one slot that needs a *landscape* photo — a portrait
+> phone shot will be cropped hard. Text sits over the bottom-left, so pick
+> something that isn't busy in that corner.
 
 ## 2. Category tiles — `/public/images/categories/`
 
-One photo per category, landscape (4:3), **1200 × 900 px**:
+One photo per category, **square (1:1), 1200 × 1200 px**.
+
+These are shown square on the homepage tiles and portrait (3:4) at the top of
+the category page, so a portrait phone photo works well here — upload it
+portrait at **1200 × 1600 px** and both crops will look right.
 
 ```
 wedding-packages.jpg
@@ -49,7 +54,10 @@ add-on-rentals.jpg
 Pattern: **`<package-slug>-<number>.jpg`**, starting at `1`.
 `-1` is the main photo (used on cards and at the top of the page).
 
-Landscape, **1600 × 1200 px** (4:3).
+**Portrait, 1200 × 1600 px (3:4).** Straight-from-the-phone photos are already
+this shape, so no cropping needed — the site is built around portrait shots.
+`-1` shows portrait on the package page and square on cards; `-2` onwards show
+square. Keep your subject roughly centred and both crops work.
 
 ```
 wedding-packages/
@@ -77,6 +85,7 @@ add-on-rentals/
   dry-ice-machine-1.jpg           -2.jpg
   flower-wall-1.jpg               -2.jpg
   led-light-up-letters-1.jpg      -2.jpg
+  uplighting-1.jpg                -2.jpg
   plinths-and-easels-1.jpg        -2.jpg
 ```
 

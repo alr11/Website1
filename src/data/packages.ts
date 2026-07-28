@@ -332,6 +332,20 @@ export const packages: Package[] = [
     photoCount: 2,
   },
   {
+    slug: 'uplighting',
+    category: 'add-on-rentals',
+    title: 'Uplighting',
+    summary: 'Coloured wash lighting to set the tone of the room.',
+    description: [
+      'Wireless uplighters placed around the room, washing the walls and backdrop in a colour of your choosing. It changes the feel of a plain function room more than almost anything else for the money, and it photographs well.',
+      'Colours are matched to your scheme. Let us know your room size and we will advise on how many units it needs.',
+    ],
+    includes: TBC_INCLUDES,
+    price: '[PRICE]',
+    hirePeriod: '[HIRE PERIOD]',
+    photoCount: 2,
+  },
+  {
     slug: 'plinths-and-easels',
     category: 'add-on-rentals',
     title: 'Plinths, Easels & Signage Stands',
