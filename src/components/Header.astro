@@ -3,8 +3,8 @@ import { site } from '../data/site';
 import { categories } from '../data/packages';
 import SmartImage from './SmartImage.astro';
 
-import { url } from '../lib/url';
-const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+import { url, stripBase } from '../lib/url';
+const path = stripBase(Astro.url.pathname);
 
 const links = [
   { href: '/', label: 'Home' },
@@ -263,10 +263,14 @@ const isCurrent = (href: string) =>
 </style>
 
 <script>
-  const toggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
-  const nav = document.querySelector<HTMLElement>('[data-nav]');
+  // The ClientRouter swaps the DOM on navigation, so listeners bound once at
+  // load are lost. Bind on astro:page-load, which fires on first load AND
+  // after every client-side navigation.
+  function initNav() {
+    const toggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
+    const nav = document.querySelector<HTMLElement>('[data-nav]');
+    if (!toggle || !nav) return;
 
-  if (toggle && nav) {
     const setOpen = (open: boolean) => {
       toggle.setAttribute('aria-expanded', String(open));
       nav.dataset.open = String(open);
@@ -285,9 +289,10 @@ const isCurrent = (href: string) =>
     });
 
     // Reset state if the viewport grows past the desktop breakpoint while open.
-    const desktop = window.matchMedia('(min-width: 1180px)');
-    desktop.addEventListener('change', (e) => {
+    window.matchMedia('(min-width: 1180px)').addEventListener('change', (e) => {
       if (e.matches) setOpen(false);
     });
   }
+
+  document.addEventListener('astro:page-load', initNav);
 </script>

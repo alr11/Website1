@@ -16,3 +16,23 @@ export function url(path: string): string {
   const suffix = path.startsWith('/') ? path : `/${path}`;
   return `${base}${suffix}`;
 }
+
+/**
+ * Inverse of `url()` — strip the base prefix off a pathname so it can be
+ * compared against the plain hrefs used in nav definitions.
+ *
+ *   base "/Website1/" ->  stripBase('/Website1/price-list') === '/price-list'
+ *   base "/Website1/" ->  stripBase('/Website1')            === '/'
+ *
+ * Without this the nav's "current page" highlight silently stops matching the
+ * moment a base path is configured.
+ */
+export function stripBase(pathname: string): string {
+  const base = import.meta.env.BASE_URL.replace(/\/+$/, '');
+  let p = pathname;
+  if (base && (p === base || p.startsWith(base + '/'))) {
+    p = p.slice(base.length);
+  }
+  p = p.replace(/\/+$/, '');
+  return p || '/';
+}

@@ -125,9 +125,12 @@ const phoneReady = !isPlaceholder(site.phone);
   is:inline
   define:vars={{ emailReady, phoneReady, emailAddr: site.email, phoneNum: site.phone }}
 >
-  (function () {
+  function initContactForm() {
     const form = document.querySelector('[data-contact-form]');
-    if (!form) return;
+    // Guard against binding twice if both the immediate call and the
+    // astro:page-load event fire for the same DOM.
+    if (!form || form.dataset.bound === '1') return;
+    form.dataset.bound = '1';
 
     const status = form.querySelector('[data-form-status]');
     const submit = form.querySelector('.cform__submit');
@@ -281,7 +284,15 @@ const phoneReady = !isPlaceholder(site.phone);
         submit.textContent = original;
       }
     });
-  })();
+  }
+
+  // The ClientRouter swaps the DOM on navigation and will NOT re-execute a
+  // script whose contents it has already run. Binding on astro:page-load means
+  // the form is re-initialised every time this page is shown — without it, a
+  // visitor returning to Contact a second time gets a form with no validation
+  // that falls back to a native submit.
+  document.addEventListener('astro:page-load', initContactForm);
+  initContactForm();
 </script>
 
 <style>
