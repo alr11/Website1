@@ -27,7 +27,10 @@ export function StatCard({
             <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
               {label}
             </p>
-            <p className="mt-2 truncate font-serif text-3xl font-semibold">
+            <p
+              className="mt-2 truncate font-serif text-3xl font-semibold"
+              data-testid={`stat-${label.toLowerCase().replace(/\s+/g, "-")}`}
+            >
               {value}
             </p>
           </div>

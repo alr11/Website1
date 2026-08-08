@@ -146,6 +146,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
         {error ? (
           <div
             role="alert"
+            data-testid="auth-error"
             className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive"
           >
             <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />

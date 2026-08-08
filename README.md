@@ -133,7 +133,40 @@ npm run build      # production build
 npm run start      # serve the production build
 npm run lint       # eslint (next/core-web-vitals)
 npm run typecheck  # tsc --noEmit
+npm test           # Playwright end-to-end suite
 ```
+
+---
+
+## Tests
+
+The end-to-end suite covers every feature: auth and route protection, first-run
+seeding, guests, budget, checklist, vendors, the dashboard roll-ups, and the
+mobile layout.
+
+```bash
+npx playwright install chromium   # once
+npm test
+```
+
+It needs **no Supabase project and no credentials**. `tests/mock-supabase.mjs`
+is a small in-memory stand-in for the GoTrue and PostgREST endpoints the app
+calls, and Playwright starts it alongside a production build of the real app.
+Everything else is genuine — the real middleware, the real `@supabase/ssr`
+cookie flow, the real React Query layer — so the suite catches integration bugs
+a component test would miss. It scopes every request to the bearer token's user,
+the same way row-level security does in Postgres.
+
+Handy flags:
+
+```bash
+npm test -- tests/e2e/guests.spec.ts   # one spec
+npm run test:headed                    # watch it drive the browser
+npm run test:report                    # open the HTML report
+```
+
+If your environment ships its own Chromium, point at it with
+`PLAYWRIGHT_CHROMIUM_PATH=/path/to/chrome` instead of installing one.
 
 ---
 
@@ -185,7 +218,15 @@ src/
 │   ├── timeline.ts           # phase → due-date maths
 │   └── types.ts              # Database type
 └── middleware.ts             # session refresh + route protection
+
+tests/
+├── mock-supabase.mjs         # in-memory GoTrue + PostgREST for the suite
+└── e2e/                      # one spec per feature area
 ```
+
+`src/middleware.ts` has to live inside `src/`, next to `app/` — a root-level
+`middleware.ts` is silently ignored when the app lives in `src/app`, and route
+protection then falls through to the layout check.
 
 ---
 
