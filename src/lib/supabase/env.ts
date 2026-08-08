@@ -1,0 +1,17 @@
+/**
+ * Reads the two public Supabase env vars and fails loudly if they are missing,
+ * so a misconfigured deploy surfaces a readable message instead of a cryptic
+ * "Invalid URL" from deep inside supabase-js.
+ */
+export function getSupabaseEnv() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!url || !anonKey) {
+    throw new Error(
+      "Missing Supabase environment variables. Copy .env.example to .env.local and set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.",
+    );
+  }
+
+  return { url, anonKey };
+}
