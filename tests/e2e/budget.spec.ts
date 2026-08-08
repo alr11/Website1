@@ -1,6 +1,6 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 
-import { resetBackend, signUpAndSetUp, statValue } from "./helpers";
+import { dialog, goTo, resetBackend, signUpAndSetUp, statValue } from "./helpers";
 
 test.beforeAll(async ({ request }) => {
   await resetBackend(request);
@@ -8,22 +8,23 @@ test.beforeAll(async ({ request }) => {
 
 test.beforeEach(async ({ page }) => {
   await signUpAndSetUp(page, { budget: "40000" });
-  await page.getByRole("link", { name: "Budget" }).click();
-  await expect(page.getByRole("heading", { name: "Budget" })).toBeVisible();
+  await goTo(page, "Budget");
 });
 
 async function logExpense(
-  page: import("@playwright/test").Page,
+  page: Page,
   description: string,
   amount: string,
   { paid = false }: { paid?: boolean } = {},
 ) {
   await page.getByRole("button", { name: "Expense", exact: true }).click();
-  await page.getByLabel("Description").fill(description);
-  await page.getByLabel("Amount").fill(amount);
-  if (paid) await page.getByLabel("Already paid").click();
-  await page.getByRole("button", { name: "Log expense" }).click();
-  await expect(page.getByRole("dialog")).toBeHidden();
+
+  const form = dialog(page);
+  await form.getByLabel("Description").fill(description);
+  await form.getByLabel("Amount").fill(amount);
+  if (paid) await form.getByLabel("Already paid").click();
+  await form.getByRole("button", { name: "Log expense" }).click();
+  await expect(form).toBeHidden();
 }
 
 test.describe("budget", () => {
@@ -51,7 +52,10 @@ test.describe("budget", () => {
 
     await page.getByRole("tab", { name: /Expenses/ }).click();
     await page
-      .getByRole("checkbox", { name: "Mark Photographer retainer paid" })
+      .getByRole("checkbox", {
+        name: "Mark Photographer retainer paid",
+        exact: true,
+      })
       .click();
 
     await expect(statValue(page, "Still owed")).toHaveText("$0");
@@ -67,40 +71,44 @@ test.describe("budget", () => {
   });
 
   test("a custom category can be added and deleted", async ({ page }) => {
-    await page.getByRole("button", { name: "Category" }).click();
-    await page.getByLabel("Name").fill("Honeymoon fund");
-    await page.getByLabel("Allocated").fill("2500");
-    await page.getByRole("button", { name: "Add category" }).click();
-    await expect(page.getByRole("dialog")).toBeHidden();
+    await page.getByRole("button", { name: "Category", exact: true }).click();
+
+    const form = dialog(page);
+    await form.getByLabel("Name").fill("Honeymoon fund");
+    await form.getByLabel("Allocated").fill("2500");
+    await form.getByRole("button", { name: "Add category" }).click();
+    await expect(form).toBeHidden();
 
     await expect(page.getByText("Honeymoon fund")).toBeVisible();
+    // The total budget is a separate figure — categories do not change it.
     await expect(statValue(page, "Total budget")).toHaveText("$40,000");
 
     await page
       .getByRole("button", { name: "Actions for Honeymoon fund" })
       .click();
     await page.getByRole("menuitem", { name: "Delete" }).click();
-    await page.getByRole("button", { name: "Delete", exact: true }).click();
+    await dialog(page).getByRole("button", { name: "Delete", exact: true }).click();
 
     await expect(page.getByText("Honeymoon fund")).toBeHidden();
   });
 
-  test("going over a category allocation is shown as over, not negative", async ({
+  test("going over a category allocation reads as over, not negative", async ({
     page,
   }) => {
-    await page
-      .getByRole("button", { name: "Actions for Stationery" })
-      .click();
+    await page.getByRole("button", { name: "Actions for Stationery" }).click();
     await page.getByRole("menuitem", { name: "Edit" }).click();
-    await page.getByLabel("Allocated").fill("500");
-    await page.getByRole("button", { name: "Save changes" }).click();
-    await expect(page.getByRole("dialog")).toBeHidden();
+
+    const categoryForm = dialog(page);
+    await categoryForm.getByLabel("Allocated").fill("500");
+    await categoryForm.getByRole("button", { name: "Save changes" }).click();
+    await expect(categoryForm).toBeHidden();
 
     await page.getByRole("button", { name: "Add expense to Stationery" }).click();
-    await page.getByLabel("Description").fill("Letterpress invitations");
-    await page.getByLabel("Amount").fill("800");
-    await page.getByRole("button", { name: "Log expense" }).click();
-    await expect(page.getByRole("dialog")).toBeHidden();
+    const expenseForm = dialog(page);
+    await expenseForm.getByLabel("Description").fill("Letterpress invitations");
+    await expenseForm.getByLabel("Amount").fill("800");
+    await expenseForm.getByRole("button", { name: "Log expense" }).click();
+    await expect(expenseForm).toBeHidden();
 
     await expect(page.getByText("$300 over")).toBeVisible();
   });

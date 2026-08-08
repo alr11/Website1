@@ -100,9 +100,11 @@ export function DashboardView() {
               <p className="text-xs font-medium uppercase tracking-[0.2em] text-blush-600">
                 The wedding of
               </p>
+              {/* The explicit spaces keep the accessible name readable as
+                  "Amelia & Jonah" rather than "Amelia&Jonah". */}
               <h1 className="mt-2 font-serif text-4xl font-semibold tracking-tight sm:text-5xl">
-                {settings.partner_one_name}
-                <span className="mx-3 text-blush-400">&amp;</span>
+                {settings.partner_one_name}{" "}
+                <span className="mx-3 text-blush-400">&amp;</span>{" "}
                 {settings.partner_two_name}
               </h1>
               <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">

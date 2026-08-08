@@ -50,7 +50,7 @@ export async function completeSetup(page: Page, options: SetupOptions = {}) {
   await page.getByRole("button", { name: "Create my planner" }).click();
 
   await expect(
-    page.getByRole("heading", { name: new RegExp(partnerOne) }),
+    page.getByRole("heading", { level: 1, name: new RegExp(partnerOne) }),
   ).toBeVisible();
 }
 
@@ -69,6 +69,44 @@ export async function chooseOption(
 ) {
   await page.getByLabel(triggerLabel, { exact: true }).click();
   await page.getByRole("option", { name: optionName, exact: true }).click();
+}
+
+const NAV_PATHS: Record<string, string> = {
+  Dashboard: "/",
+  Guests: "/guests",
+  Budget: "/budget",
+  Checklist: "/timeline",
+  Vendors: "/vendors",
+};
+
+/**
+ * Clicks a link in the sidebar (or the mobile sheet). Scoped to the nav
+ * because the dashboard cards link to the same pages by the same name.
+ */
+export async function goTo(page: Page, label: string) {
+  await page
+    .getByRole("navigation")
+    .getByRole("link", { name: label, exact: true })
+    .click();
+
+  const path = NAV_PATHS[label];
+  if (path) {
+    await expect(page).toHaveURL(new RegExp(`${path === "/" ? "" : path}/?$`));
+  }
+  // The dashboard's h1 is the couple's names, so only assert it elsewhere.
+  if (label !== "Dashboard") {
+    await expect(pageHeading(page, label)).toBeVisible();
+  }
+}
+
+/** The `<h1>` of the current page — never a card title or a stat label. */
+export function pageHeading(page: Page, name: string) {
+  return page.getByRole("heading", { level: 1, name, exact: true });
+}
+
+/** The open dialog, so field labels never collide with the page behind it. */
+export function dialog(page: Page) {
+  return page.getByRole("dialog");
 }
 
 /** Reads the headline number out of a stat card. */

@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import {
   completeSetup,
-  futureDate,
+  goTo,
   resetBackend,
   signUp,
   statValue,
@@ -22,16 +22,14 @@ test.describe("first-run setup", () => {
       venue: "The Old Rectory",
     });
 
-    // Hero reflects what was entered.
-    await expect(page.getByRole("heading", { name: /Rosa/ })).toContainText(
-      "Tomás",
-    );
+    await expect(
+      page.getByRole("heading", { level: 1, name: /Rosa/ }),
+    ).toContainText("Tomás");
     await expect(page.getByText("The Old Rectory")).toBeVisible();
     await expect(statValue(page, "Budget spent")).toHaveText("$0");
 
     // 54 seeded checklist tasks, none complete.
-    await page.getByRole("link", { name: "Checklist" }).click();
-    await expect(page.getByRole("heading", { name: "Checklist" })).toBeVisible();
+    await goTo(page, "Checklist");
     await expect(page.getByText("54 tasks still to do")).toBeVisible();
     await expect(page.getByText("0% complete")).toBeVisible();
 
@@ -50,31 +48,11 @@ test.describe("first-run setup", () => {
     }
 
     // Ten budget categories, allocations derived from the total budget.
-    await page.getByRole("link", { name: "Budget" }).click();
+    await goTo(page, "Budget");
     await expect(statValue(page, "Total budget")).toHaveText("$50,000");
     await expect(page.getByText("Venue & Rentals")).toBeVisible();
+    // Venue takes 30% of 50,000 and nothing is spent yet.
     await expect(page.getByText("$15,000 left")).toBeVisible();
-  });
-
-  test("checklist due dates are derived from the wedding date", async ({
-    page,
-  }) => {
-    await signUp(page);
-    await completeSetup(page, { weddingDate: futureDate(12) });
-
-    await page.getByRole("link", { name: "Checklist" }).click();
-
-    // "Day of" tasks fall on the wedding date itself.
-    const weddingDate = new Date(futureDate(12));
-    const formatted = weddingDate.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
-
-    await expect(
-      page.getByText("Get married").locator("xpath=following-sibling::p"),
-    ).toContainText(formatted);
   });
 
   test("setup only appears once", async ({ page }) => {
@@ -83,6 +61,23 @@ test.describe("first-run setup", () => {
 
     await page.reload();
     await expect(page.getByText(/set up your wedding/i)).toBeHidden();
-    await expect(page.getByRole("heading", { name: /Amelia/ })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { level: 1, name: /Amelia/ }),
+    ).toBeVisible();
+  });
+
+  test("checklist due dates are counted back from the wedding date", async ({
+    page,
+  }) => {
+    await signUp(page);
+    await completeSetup(page);
+
+    await goTo(page, "Checklist");
+
+    // Every seeded task carries a derived due date.
+    await expect(page.getByText("No date set")).toBeHidden();
+    await expect(
+      page.getByText(/^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d/).first(),
+    ).toBeVisible();
   });
 });

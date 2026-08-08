@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { completeSetup, resetBackend, signUp } from "./helpers";
+import { completeSetup, pageHeading, resetBackend, signUp } from "./helpers";
 
 test.beforeAll(async ({ request }) => {
   await resetBackend(request);
@@ -10,10 +10,9 @@ test.describe("authentication", () => {
   test("signed-out visitors are sent to the login page", async ({ page }) => {
     await page.goto("/guests");
 
+    // The redirectTo parameter only survives if the middleware is running.
     await expect(page).toHaveURL(/\/login\?redirectTo=%2Fguests/);
-    await expect(
-      page.getByRole("heading", { name: "Welcome back" }),
-    ).toBeVisible();
+    await expect(pageHeading(page, "Welcome back")).toBeVisible();
   });
 
   test("wrong credentials surface an inline error, not a crash", async ({
@@ -47,7 +46,7 @@ test.describe("authentication", () => {
     await page.getByRole("menuitem", { name: "Sign out" }).click();
     await expect(page).toHaveURL(/\/login/);
 
-    // The protected route must bounce us back out.
+    // A protected route must bounce us straight back out.
     await page.goto("/budget");
     await expect(page).toHaveURL(/\/login/);
 
@@ -55,7 +54,9 @@ test.describe("authentication", () => {
     await page.getByLabel("Password").fill("wedding-password");
     await page.getByRole("button", { name: "Sign in" }).click();
 
-    await expect(page.getByRole("heading", { name: /Amelia/ })).toBeVisible();
+    // Signing back in returns to the page that bounced us, not the dashboard.
+    await expect(page).toHaveURL(/\/budget$/);
+    await expect(pageHeading(page, "Budget")).toBeVisible();
   });
 
   test("signed-in visitors are redirected away from the auth pages", async ({
@@ -65,7 +66,10 @@ test.describe("authentication", () => {
     await completeSetup(page);
 
     await page.goto("/login");
-    await expect(page).toHaveURL(/\/(?!login)?$/);
-    await expect(page.getByRole("heading", { name: /Amelia/ })).toBeVisible();
+
+    await expect(page).toHaveURL(/:\d+\/$/);
+    await expect(
+      page.getByRole("heading", { level: 1, name: /Amelia/ }),
+    ).toBeVisible();
   });
 });

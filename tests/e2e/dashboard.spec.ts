@@ -1,7 +1,9 @@
 import { expect, test } from "@playwright/test";
 
 import {
+  dialog,
   futureDate,
+  goTo,
   resetBackend,
   signUpAndSetUp,
   statValue,
@@ -25,29 +27,31 @@ test.describe("dashboard", () => {
     await expect(statValue(page, "Vendors booked")).toHaveText("0");
   });
 
-  test("pulls numbers from the other sections", async ({ page }) => {
+  test("pulls its numbers from the other sections", async ({ page }) => {
     await signUpAndSetUp(page, { budget: "40000" });
 
     // A guest who is coming, with a plus one.
-    await page.getByRole("link", { name: "Guests" }).click();
-    await page.getByRole("button", { name: /Add (your first )?guest/ }).click();
-    await page.getByLabel("First name").fill("Wren");
-    await page.getByLabel("Last name").fill("Castellan");
-    await page.getByLabel("Party size").fill("2");
-    await page.getByLabel("RSVP").click();
-    await page.getByRole("option", { name: "Attending" }).click();
+    await goTo(page, "Guests");
     await page.getByRole("button", { name: "Add guest", exact: true }).click();
-    await expect(page.getByRole("dialog")).toBeHidden();
+    const guestForm = dialog(page);
+    await guestForm.getByLabel("First name").fill("Wren");
+    await guestForm.getByLabel("Last name").fill("Castellan");
+    await guestForm.getByLabel("Party size").fill("2");
+    await guestForm.getByLabel("RSVP").click();
+    await page.getByRole("option", { name: "Attending", exact: true }).click();
+    await guestForm.getByRole("button", { name: "Add guest", exact: true }).click();
+    await expect(guestForm).toBeHidden();
 
-    // An expense.
-    await page.getByRole("link", { name: "Budget" }).click();
+    // An expense against the budget.
+    await goTo(page, "Budget");
     await page.getByRole("button", { name: "Expense", exact: true }).click();
-    await page.getByLabel("Description").fill("Venue deposit");
-    await page.getByLabel("Amount").fill("5000");
-    await page.getByRole("button", { name: "Log expense" }).click();
-    await expect(page.getByRole("dialog")).toBeHidden();
+    const expenseForm = dialog(page);
+    await expenseForm.getByLabel("Description").fill("Venue deposit");
+    await expenseForm.getByLabel("Amount").fill("5000");
+    await expenseForm.getByRole("button", { name: "Log expense" }).click();
+    await expect(expenseForm).toBeHidden();
 
-    await page.getByRole("link", { name: "Dashboard" }).click();
+    await goTo(page, "Dashboard");
 
     await expect(statValue(page, "Guests attending")).toHaveText("2");
     await expect(statValue(page, "Budget spent")).toHaveText("$5,000");
@@ -59,29 +63,30 @@ test.describe("dashboard", () => {
   }) => {
     await signUpAndSetUp(page);
 
-    const upNext = page.getByText("Up next").locator("xpath=ancestor::div[3]");
-    await expect(
-      upNext.getByText("Agree on an overall budget"),
-    ).toBeVisible();
+    const firstTask = page.getByText("Agree on an overall budget");
+    await expect(firstTask).toBeVisible();
 
     await page
-      .getByRole("checkbox", { name: 'Mark "Agree on an overall budget" complete' })
+      .getByRole("checkbox", {
+        name: 'Mark "Agree on an overall budget" complete',
+        exact: true,
+      })
       .click();
 
     await expect(statValue(page, "Checklist")).toHaveText("1/54");
-    await expect(
-      page.getByText("Agree on an overall budget"),
-    ).toBeHidden();
+    // Completed tasks drop off the up-next list.
+    await expect(firstTask).toBeHidden();
   });
 
   test("wedding details can be edited from the hero", async ({ page }) => {
     await signUpAndSetUp(page);
 
     await page.getByRole("button", { name: "Edit details" }).click();
-    await page.getByLabel("Venue").fill("The Old Rectory");
-    await page.getByLabel("Total budget").fill("55000");
-    await page.getByRole("button", { name: "Save details" }).click();
-    await expect(page.getByRole("dialog")).toBeHidden();
+    const form = dialog(page);
+    await form.getByLabel("Venue", { exact: true }).fill("The Old Rectory");
+    await form.getByLabel("Total budget").fill("55000");
+    await form.getByRole("button", { name: "Save details" }).click();
+    await expect(form).toBeHidden();
 
     await expect(page.getByText("The Old Rectory")).toBeVisible();
     await expect(page.getByText("$55,000 left of $55,000")).toBeVisible();

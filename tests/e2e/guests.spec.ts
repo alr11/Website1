@@ -1,7 +1,9 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 
 import {
   chooseOption,
+  dialog,
+  goTo,
   resetBackend,
   signUpAndSetUp,
   statValue,
@@ -13,22 +15,24 @@ test.beforeAll(async ({ request }) => {
 
 test.beforeEach(async ({ page }) => {
   await signUpAndSetUp(page);
-  await page.getByRole("link", { name: "Guests" }).click();
-  await expect(page.getByRole("heading", { name: "Guests" })).toBeVisible();
+  await goTo(page, "Guests");
 });
 
 async function addGuest(
-  page: import("@playwright/test").Page,
+  page: Page,
   firstName: string,
   lastName: string,
   partySize = "1",
 ) {
-  await page.getByRole("button", { name: /Add (your first )?guest/ }).click();
-  await page.getByLabel("First name").fill(firstName);
-  await page.getByLabel("Last name").fill(lastName);
-  await page.getByLabel("Party size").fill(partySize);
+  // The page header button is always present, empty list or not.
   await page.getByRole("button", { name: "Add guest", exact: true }).click();
-  await expect(page.getByRole("dialog")).toBeHidden();
+
+  const form = dialog(page);
+  await form.getByLabel("First name").fill(firstName);
+  await form.getByLabel("Last name").fill(lastName);
+  await form.getByLabel("Party size").fill(partySize);
+  await form.getByRole("button", { name: "Add guest", exact: true }).click();
+  await expect(form).toBeHidden();
 }
 
 test.describe("guest list", () => {
@@ -81,10 +85,12 @@ test.describe("guest list", () => {
 
     await page.getByRole("button", { name: "Row actions" }).first().click();
     await page.getByRole("menuitem", { name: "Edit" }).click();
-    await page.getByLabel("Table").fill("Head table");
-    await page.getByLabel("Dietary needs").fill("Coeliac");
-    await page.getByRole("button", { name: "Save changes" }).click();
-    await expect(page.getByRole("dialog")).toBeHidden();
+
+    const form = dialog(page);
+    await form.getByLabel("Table").fill("Head table");
+    await form.getByLabel("Dietary needs").fill("Coeliac");
+    await form.getByRole("button", { name: "Save changes" }).click();
+    await expect(form).toBeHidden();
 
     await expect(page.getByRole("cell", { name: "Head table" })).toBeVisible();
     await expect(statValue(page, "Seated")).toHaveText("1/1");

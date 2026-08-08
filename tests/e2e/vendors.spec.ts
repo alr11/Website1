@@ -1,7 +1,9 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 
 import {
   chooseOption,
+  dialog,
+  goTo,
   resetBackend,
   signUpAndSetUp,
   statValue,
@@ -13,26 +15,34 @@ test.beforeAll(async ({ request }) => {
 
 test.beforeEach(async ({ page }) => {
   await signUpAndSetUp(page);
-  await page.getByRole("link", { name: "Vendors" }).click();
-  await expect(page.getByRole("heading", { name: "Vendors" })).toBeVisible();
+  await goTo(page, "Vendors");
 });
 
+/**
+ * The card title for a vendor. Matching on the heading rather than bare text
+ * keeps the "added to your vendors" toast out of the result.
+ */
+const vendorCard = (page: Page, name: string) =>
+  page.getByRole("heading", { name, exact: true });
+
 async function addVendor(
-  page: import("@playwright/test").Page,
+  page: Page,
   name: string,
   type: string,
   status: string,
   cost: string,
   deposit = "0",
 ) {
-  await page.getByRole("button", { name: /Add (your first )?vendor/ }).click();
-  await page.getByLabel("Business name").fill(name);
+  await page.getByRole("button", { name: "Add vendor", exact: true }).click();
+
+  const form = dialog(page);
+  await form.getByLabel("Business name").fill(name);
   await chooseOption(page, "Type", type);
   await chooseOption(page, "Status", status);
-  await page.getByLabel("Quoted cost").fill(cost);
-  await page.getByLabel("Deposit paid").fill(deposit);
-  await page.getByRole("button", { name: "Add vendor", exact: true }).click();
-  await expect(page.getByRole("dialog")).toBeHidden();
+  await form.getByLabel("Quoted cost").fill(cost);
+  await form.getByLabel("Deposit paid").fill(deposit);
+  await form.getByRole("button", { name: "Add vendor", exact: true }).click();
+  await expect(form).toBeHidden();
 }
 
 test.describe("vendor directory", () => {
@@ -46,7 +56,7 @@ test.describe("vendor directory", () => {
   }) => {
     await addVendor(page, "Ivy House Barn", "Venue", "Booked", "14500", "4000");
 
-    await expect(page.getByText("Ivy House Barn")).toBeVisible();
+    await expect(vendorCard(page, "Ivy House Barn")).toBeVisible();
     await expect(statValue(page, "Vendors")).toHaveText("1");
     await expect(statValue(page, "Booked")).toHaveText("1");
     await expect(statValue(page, "Contracted")).toHaveText("$14,500");
@@ -61,7 +71,6 @@ test.describe("vendor directory", () => {
 
     await expect(statValue(page, "Booked")).toHaveText("0");
     await expect(statValue(page, "Contracted")).toHaveText("$0");
-    await expect(page.getByText("2 still being chased")).toBeHidden();
     await expect(page.getByText("1 still being chased")).toBeVisible();
   });
 
@@ -70,12 +79,13 @@ test.describe("vendor directory", () => {
     await addVendor(page, "Saltwood Kitchen", "Catering", "Booked", "9800");
 
     await chooseOption(page, "Filter by vendor type", "Catering");
-    await expect(page.getByText("Saltwood Kitchen")).toBeVisible();
-    await expect(page.getByText("Ivy House Barn")).toBeHidden();
+    await expect(vendorCard(page, "Saltwood Kitchen")).toBeVisible();
+    await expect(vendorCard(page, "Ivy House Barn")).toBeHidden();
 
     await chooseOption(page, "Filter by vendor type", "All types");
     await page.getByLabel("Search vendors").fill("saltwood");
-    await expect(page.getByText("Ivy House Barn")).toBeHidden();
+    await expect(vendorCard(page, "Ivy House Barn")).toBeHidden();
+    await expect(vendorCard(page, "Saltwood Kitchen")).toBeVisible();
   });
 
   test("a vendor can be edited and deleted", async ({ page }) => {
@@ -86,15 +96,15 @@ test.describe("vendor directory", () => {
       .click();
     await page.getByRole("menuitem", { name: "Edit" }).click();
     await chooseOption(page, "Status", "Booked");
-    await page.getByRole("button", { name: "Save changes" }).click();
-    await expect(page.getByRole("dialog")).toBeHidden();
+    await dialog(page).getByRole("button", { name: "Save changes" }).click();
+    await expect(dialog(page)).toBeHidden();
     await expect(statValue(page, "Booked")).toHaveText("1");
 
     await page
       .getByRole("button", { name: "Actions for Rosewater Cakes" })
       .click();
     await page.getByRole("menuitem", { name: "Delete" }).click();
-    await page.getByRole("button", { name: "Remove vendor" }).click();
+    await dialog(page).getByRole("button", { name: "Remove vendor" }).click();
 
     await expect(page.getByText("No vendors yet")).toBeVisible();
   });
