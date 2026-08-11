@@ -1,0 +1,37 @@
+{
+  "expo": {
+    "name": "Everly",
+    "slug": "everly-wedding-planner",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "everly",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#fbf9f6"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.everly.weddingplanner",
+      "buildNumber": "1",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "com.everly.weddingplanner",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#fbe9ec"
+      }
+    },
+    "plugins": ["expo-router", "expo-font"],
+    "experiments": {
+      "typedRoutes": false
+    }
+  }
+}

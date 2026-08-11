@@ -238,6 +238,18 @@ positive states and champagne for warnings — set as HSL CSS custom properties 
 Garamond, body copy uses Inter. It is a single light theme by design; there is no
 dark mode toggle.
 
+## The iOS & Android app
+
+`mobile/` holds an Expo (React Native) version of the same planner, pointed at
+the same Supabase project — one database, two front ends. The schema, RLS
+policies and all the pure logic are shared; the screens are native.
+
+See [`mobile/README.md`](mobile/README.md) for setup, running it in Xcode, and
+the App Review checklist. Note that it typechecks but has never been compiled
+on a Mac — no iOS toolchain was available where it was written.
+
+---
+
 ## Deploying
 
 Push to a Git repo and import it into Vercel, adding the same two environment

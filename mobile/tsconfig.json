@@ -1,0 +1,17 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    /* Expo's base still uses node10 resolution, which cannot read the
+       "exports" maps in @tanstack/react-query or @supabase/supabase-js —
+       their types silently degrade to `any`. Metro resolves like a bundler,
+       so tell TypeScript the same. */
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"],
+  "exclude": ["node_modules"]
+}
