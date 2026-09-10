@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1250" width="1000" height="1250" role="img" aria-label="Placeholder: DRIVER PORTRAIT">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#141416"/>
+      <stop offset="100%" stop-color="#0b0b0c"/>
+    </linearGradient>
+    <pattern id="hatch" width="24" height="24" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="24" height="24" fill="none"/>
+      <line x1="0" y1="0" x2="0" y2="24" stroke="#d4b13c" stroke-opacity="0.10" stroke-width="8"/>
+    </pattern>
+  </defs>
+  <rect width="1000" height="1250" fill="url(#g)"/>
+  <rect width="1000" height="1250" fill="url(#hatch)"/>
+  <rect x="8" y="8" width="984" height="1234" fill="none" stroke="#d4b13c" stroke-opacity="0.35" stroke-width="2" stroke-dasharray="14 10"/>
+  <g font-family="Georgia, 'Times New Roman', serif" text-anchor="middle">
+    <text x="500" y="615" fill="#d4b13c" font-size="89" letter-spacing="2">DRIVER PORTRAIT</text>
+    <text x="500" y="702" fill="#faf8f4" fill-opacity="0.65" font-family="system-ui, sans-serif" font-size="44">Photo of the owner beside the car, for the About page.</text>
+  </g>
+</svg>
