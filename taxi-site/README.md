@@ -39,16 +39,33 @@ testimonials, service area, licensing details and image paths are all defined
 there and read by the components. You should not need to touch a page or a
 component to change copy or pricing.
 
-Values still marked `PLACEHOLDER` in that file need replacing before launch:
+The site ships with a complete set of worked **example** values, so it reads as
+a finished business rather than a wireframe. Everything commented `EXAMPLE` is
+safe to publish but is not real, and must be replaced before launch:
 
-- **Phone numbers** — `01793 000000` and `07700 900000` are deliberately
-  un-dialable placeholders.
-- **Email** — `bookings@jftaxiservice.co.uk`
-- **Licence number** and licensing authority
-- **Google rating and review count** (`social`) and the reviews URL
-- **Testimonials** — the three quotes are written placeholders, not real reviews
-- **Founder name and story** (`about`)
-- **All rates** in `pricing` — the figures are illustrative
+| Field | Currently | Note |
+| --- | --- | --- |
+| `contact.phone` | `01632 960 123` | Ofcom's reserved drama range — see below |
+| `contact.whatsapp` | `07700 900 123` | Ofcom's reserved drama range |
+| `contact.email` | `bookings@jftaxiservice.co.uk` | Domain is not registered yet |
+| `business.licenceNumber` | `PHO/2019/0847` | Invented |
+| `social.rating` / `.reviewCount` | 4.9 from 187 | Invented |
+| `social.reviewsUrl` | `g.page/r/YOUR-PLACE-ID/review` | Template — paste your real link |
+| `about.founder` / `.story` | James Fielding | Invented |
+| `testimonials` | 3 quotes | **Invented — see the warning below** |
+| `pricing.*` | Full rate table | Plausible but invented |
+
+**Phone numbers.** The examples come from the ranges Ofcom reserves for drama
+and documentation (`01632 960xxx`, `07700 900xxx`). They can never be allocated
+to a real subscriber, so the demo site cannot ring a stranger. Ofcom reserves no
+range inside the `01793` Swindon code, which is why the example landline is not
+an 01793 number — swap in your real one.
+
+> **The three testimonials are invented.** They were written to fill the layout.
+> Publishing invented reviews as genuine customer feedback breaches the CMA's
+> rules on fake consumer reviews, so replace them with real, attributable
+> reviews — or delete the section — before the site goes live. The same applies
+> to the 4.9 / 187 rating figures in the trust bar.
 
 ### Images
 

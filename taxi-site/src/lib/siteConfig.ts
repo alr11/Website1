@@ -6,8 +6,24 @@
  * prices, testimonials, service area — lives in this file. Components read
  * from it; nothing is hardcoded in the pages.
  *
- * TODO(owner): replace every value marked `PLACEHOLDER` before going live.
- * The phone numbers below are deliberately un-dialable placeholders.
+ * The site currently ships with a complete set of worked EXAMPLE values so it
+ * reads as a finished business rather than a wireframe. Everything marked
+ * `EXAMPLE` is safe to publish but is not real — swap it before going live:
+ *
+ *   business.licenceNumber   your Swindon Borough Council licence
+ *   contact.phone / .href    your real 01793 number (see the note below)
+ *   contact.whatsapp / .href your real mobile
+ *   contact.email            once the domain is registered
+ *   social.*                 your Google Business Profile rating and link
+ *   about.founder / .story   your name and your version of the story
+ *   testimonials             real, attributable reviews only
+ *   pricing.*                your actual rates
+ *
+ * PHONE NUMBERS: the numbers below come from Ofcom's ranges reserved for
+ * drama and documentation (01632 960xxx and 07700 900xxx). They are
+ * guaranteed never to be allocated to a real subscriber, so the demo site
+ * cannot ring a stranger. Ofcom reserves no range inside the 01793 Swindon
+ * code, which is why the example landline is not an 01793 number.
  */
 
 export const siteConfig = {
@@ -24,21 +40,21 @@ export const siteConfig = {
     metaDescription:
       "JF Taxi Service — licensed private hire and fixed-price airport transfers from Swindon, Wiltshire. Pre-book Heathrow, Gatwick, Bristol and local journeys.",
     /** Legal / licensing line shown in the footer and About page. */
-    licensing: "Licensed private hire operator — Swindon Borough Council", // PLACEHOLDER
-    licenceNumber: "PH-000000", // PLACEHOLDER TODO(owner): real licence number
-    established: "2019", // PLACEHOLDER
+    licensing: "Licensed private hire operator — Swindon Borough Council", // EXAMPLE
+    licenceNumber: "PHO/2019/0847", // EXAMPLE
+    established: "2019", // EXAMPLE
   },
 
   /* ----------------------------------------------------------------- contact */
   contact: {
     /** Human-readable phone, shown in the UI. */
-    phone: "01793 000000", // PLACEHOLDER TODO(owner): real number
+    phone: "01632 960 123", // EXAMPLE — Ofcom reserved fictitious range
     /** E.164 form used in tel: links. Must have no spaces. */
-    phoneHref: "+441793000000", // PLACEHOLDER
-    whatsapp: "07700 900000", // PLACEHOLDER (Ofcom fictitious-number range)
+    phoneHref: "+441632960123", // EXAMPLE
+    whatsapp: "07700 900 123", // EXAMPLE — Ofcom reserved fictitious range
     /** International form, digits only, for the wa.me link. */
-    whatsappHref: "447700900000", // PLACEHOLDER
-    email: "bookings@jftaxiservice.co.uk", // PLACEHOLDER
+    whatsappHref: "447700900123", // EXAMPLE
+    email: "bookings@jftaxiservice.co.uk", // EXAMPLE — domain not yet registered
     baseTown: "Swindon",
     county: "Wiltshire",
     /** Shown wherever an address-ish line is needed. */
@@ -48,10 +64,10 @@ export const siteConfig = {
 
   /* ------------------------------------------------------------ social proof */
   social: {
-    rating: 5.0, // PLACEHOLDER until real reviews are connected
-    reviewCount: 394, // PLACEHOLDER
-    /** TODO(owner): paste the Google Business Profile review link. */
-    reviewsUrl: "#", // PLACEHOLDER
+    rating: 4.9, // EXAMPLE
+    reviewCount: 187, // EXAMPLE
+    /** Paste your Google Business Profile "write a review" short link here. */
+    reviewsUrl: "https://g.page/r/YOUR-PLACE-ID/review", // EXAMPLE
     ratingSource: "Google reviews",
   },
 
@@ -150,7 +166,9 @@ export const siteConfig = {
    * FRONT-END ESTIMATOR ONLY. These figures drive the /pricing calculator,
    * which runs entirely in the browser. There is no pricing API and no
    * payment processing anywhere in this project.
-   * TODO(owner): replace with your real rates before publishing.
+   *
+   * EXAMPLE rates. They are internally consistent and roughly plausible for
+   * Swindon, but they are invented — replace the lot with your real prices.
    */
   pricing: {
     currency: "£",
@@ -237,20 +255,25 @@ export const siteConfig = {
   /* ------------------------------------------------------------- about copy */
   about: {
     heading: "One driver, one car, done properly",
-    /** Paragraphs of the founder story. TODO(owner): rewrite in your own words. */
+    /** Paragraphs of the founder story. EXAMPLE — rewrite in your own words. */
     story: [
       "JF Taxi Service started with a simple frustration: booking a car for an early flight and having no idea, right up until the moment it did or did not arrive, whether anyone was actually coming.",
       "So the model here is deliberately small. One licensed driver, one immaculately kept car, and a diary that is never overbooked. Every journey is agreed in advance at a fixed price, confirmed the night before, and driven by the person you spoke to.",
-      "It means we cannot take every job. It also means that when we say we will be outside at ten past four in the morning, we are outside at ten past four in the morning.", // PLACEHOLDER
+      "It means we cannot take every job. It also means that when we say we will be outside at ten past four in the morning, we are outside at ten past four in the morning.",
     ],
     founder: {
-      name: "James F.", // PLACEHOLDER TODO(owner): real name
-      role: "Owner & licensed driver",
+      name: "James Fielding", // EXAMPLE
+      role: "Owner & licensed driver", // EXAMPLE
     },
   },
 
   /* ----------------------------------------------------------- testimonials */
-  /** PLACEHOLDER — TODO(owner): replace with real, attributable reviews. */
+  /**
+   * EXAMPLE reviews — written for the demo, not said by anyone. Publishing
+   * invented reviews as genuine would breach the CMA's rules on fake
+   * consumer reviews, so replace these with real, attributable ones before
+   * the site goes live.
+   */
   testimonials: [
     {
       quote:
@@ -283,8 +306,9 @@ export const siteConfig = {
 
   /* ---------------------------------------------------------------- imagery */
   /**
-   * TODO(owner): drop the real photographs into /public/images using exactly
-   * these filenames and the site will pick them up with no code changes.
+   * Drop the real photographs into /public/images using exactly these
+   * filenames and the site picks them up with no code changes. See
+   * public/images/README.md for the list and suggested sizes.
    */
   images: {
     logo: "/images/TODO-logo.svg",

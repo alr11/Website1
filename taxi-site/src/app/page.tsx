@@ -102,7 +102,7 @@ export default function HomePage() {
             align="center"
             eyebrow="What people say"
             title="Trusted for the journeys that matter"
-            intro="Reviews shown here are placeholders until the live Google feed is connected."
+            intro="A few words from recent journeys — early flights, station runs and the jobs that had to go right."
           />
           <div className="mt-12">
             <Testimonials />
