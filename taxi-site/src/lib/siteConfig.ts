@@ -312,10 +312,14 @@ export const siteConfig = {
    * public/images/README.md for the list and suggested sizes.
    */
   images: {
-    logo: "/images/TODO-logo.svg",
-    hero: "/images/TODO-hero-night-road.svg",
-    fleet: "/images/TODO-caddy-vw-front-three-quarter.svg",
-    fleetAlt: "/images/TODO-caddy-vw-rear.svg",
+    logo: "/images/Logo.png", // NB: capital L — the filesystem is case-sensitive in production
+    /* Reuses the fleet photo behind the hero scrim. Swap in a wide, dark
+       shot of the car on the road when one is available. */
+    hero: "/images/caddy-front.jpg",
+    fleet: "/images/caddy-front.jpg",
+    /* Second angle of the same car. Points at the front shot until a rear
+       three-quarter photo is supplied, so no placeholder plate is shown. */
+    fleetAlt: "/images/caddy-front.jpg",
     about: "/images/TODO-driver-portrait.svg",
     map: "/images/TODO-service-area-map.svg",
   },
