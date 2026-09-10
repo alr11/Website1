@@ -45,7 +45,7 @@ safe to publish but is not real, and must be replaced before launch:
 
 | Field | Currently | Note |
 | --- | --- | --- |
-| `contact.phone` | `01632 960 123` | Ofcom's reserved drama range — see below |
+| `contact.phone` | `01793 274 574` | Randomly generated — see below |
 | `contact.whatsapp` | `07700 900 123` | Ofcom's reserved drama range |
 | `contact.email` | `bookings@jftaxiservice.co.uk` | Domain is not registered yet |
 | `business.licenceNumber` | `PHO/2019/0847` | Invented |
@@ -55,11 +55,12 @@ safe to publish but is not real, and must be replaced before launch:
 | `testimonials` | 3 quotes | **Invented — see the warning below** |
 | `pricing.*` | Full rate table | Plausible but invented |
 
-**Phone numbers.** The examples come from the ranges Ofcom reserves for drama
-and documentation (`01632 960xxx`, `07700 900xxx`). They can never be allocated
-to a real subscriber, so the demo site cannot ring a stranger. Ofcom reserves no
-range inside the `01793` Swindon code, which is why the example landline is not
-an 01793 number — swap in your real one.
+**Phone numbers.** The landline is a randomly generated `01793` Swindon number,
+picked so the demo reads with the right dialling code. It has **not** been
+checked against Ofcom's allocations and may belong to a real subscriber, so
+replace it with your own number before publishing or sharing the site. The
+mobile (`07700 900 123`) is from Ofcom's range reserved for drama and
+documentation and is never allocated to anyone.
 
 > **The three testimonials are invented.** They were written to fill the layout.
 > Publishing invented reviews as genuine customer feedback breaches the CMA's

@@ -19,11 +19,12 @@
  *   testimonials             real, attributable reviews only
  *   pricing.*                your actual rates
  *
- * PHONE NUMBERS: the numbers below come from Ofcom's ranges reserved for
- * drama and documentation (01632 960xxx and 07700 900xxx). They are
- * guaranteed never to be allocated to a real subscriber, so the demo site
- * cannot ring a stranger. Ofcom reserves no range inside the 01793 Swindon
- * code, which is why the example landline is not an 01793 number.
+ * PHONE NUMBERS: the landline is a randomly generated 01793 Swindon number,
+ * chosen so the demo reads with the right dialling code. It has NOT been
+ * checked against Ofcom's allocations, so it may belong to a real
+ * subscriber — replace it with your own number before the site is published
+ * or shared. The mobile is from 07700 900xxx, Ofcom's range reserved for
+ * drama and documentation, which is never allocated to anyone.
  */
 
 export const siteConfig = {
@@ -48,9 +49,9 @@ export const siteConfig = {
   /* ----------------------------------------------------------------- contact */
   contact: {
     /** Human-readable phone, shown in the UI. */
-    phone: "01632 960 123", // EXAMPLE — Ofcom reserved fictitious range
+    phone: "01793 274 574", // EXAMPLE — randomly generated, not verified as unallocated
     /** E.164 form used in tel: links. Must have no spaces. */
-    phoneHref: "+441632960123", // EXAMPLE
+    phoneHref: "+441793274574", // EXAMPLE
     whatsapp: "07700 900 123", // EXAMPLE — Ofcom reserved fictitious range
     /** International form, digits only, for the wa.me link. */
     whatsappHref: "447700900123", // EXAMPLE
