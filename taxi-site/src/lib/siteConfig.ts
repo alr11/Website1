@@ -19,27 +19,28 @@
  *   testimonials             real, attributable reviews only
  *   pricing.*                your actual rates
  *
- * PHONE NUMBERS: the landline is a randomly generated 01793 Swindon number,
- * chosen so the demo reads with the right dialling code. It has NOT been
- * checked against Ofcom's allocations, so it may belong to a real
- * subscriber — replace it with your own number before the site is published
- * or shared. The mobile is from 07700 900xxx, Ofcom's range reserved for
- * drama and documentation, which is never allocated to anyone.
+ * CONTACT DETAILS ARE REAL. The phone, WhatsApp and email below are the
+ * business's own, taken from the supplied card. Anything published with them
+ * can be dialled and emailed by the public — check them before each deploy.
+ *
+ * STILL NOT REAL, and listed in the table above: the licence number, the
+ * rating and review count, the founder name and story, the testimonials, and
+ * every figure in `pricing`.
  */
 
 export const siteConfig = {
   /* ---------------------------------------------------------------- business */
   business: {
-    name: "JF Taxi Service",
+    name: "Quick Ride Taxis",
     /** Short form used in tight spaces (mobile header, footer mark). */
-    shortName: "JF Taxi",
+    shortName: "Quick Ride",
     /** One line under the hero heading. Keep it under ~90 characters. */
-    tagline: "Swindon's pre-booked private hire service",
+    tagline: "Fast · Safe · Reliable",
     valueProp:
       "Fixed-price airport transfers and local journeys across Wiltshire, in a spotless, fully-licensed car — booked in advance, on time, every time.",
     /** Used in <meta name="description"> and social cards. */
     metaDescription:
-      "JF Taxi Service — licensed private hire and fixed-price airport transfers from Swindon, Wiltshire. Pre-book Heathrow, Gatwick, Bristol and local journeys.",
+      "Quick Ride Taxis — licensed private hire and fixed-price airport transfers from Swindon, Wiltshire. Pre-book Heathrow, Gatwick, Bristol and local journeys.",
     /** Legal / licensing line shown in the footer and About page. */
     licensing: "Licensed private hire operator — Swindon Borough Council", // EXAMPLE
     licenceNumber: "PHO/2019/0847", // EXAMPLE
@@ -49,13 +50,13 @@ export const siteConfig = {
   /* ----------------------------------------------------------------- contact */
   contact: {
     /** Human-readable phone, shown in the UI. */
-    phone: "01793 274 574", // EXAMPLE — randomly generated, not verified as unallocated
+    phone: "07809 286 379", // REAL — from the business card
     /** E.164 form used in tel: links. Must have no spaces. */
-    phoneHref: "+441793274574", // EXAMPLE
-    whatsapp: "07700 900 123", // EXAMPLE — Ofcom reserved fictitious range
+    phoneHref: "+447809286379", // REAL
+    whatsapp: "07809 286 379", // REAL — same line as above
     /** International form, digits only, for the wa.me link. */
-    whatsappHref: "447700900123", // EXAMPLE
-    email: "bookings@jftaxiservice.co.uk", // EXAMPLE — domain not yet registered
+    whatsappHref: "447809286379", // REAL
+    email: "quickridetaxis05@gmail.com", // REAL — from the business card
     baseTown: "Swindon",
     county: "Wiltshire",
     /** Shown wherever an address-ish line is needed. */
@@ -258,12 +259,12 @@ export const siteConfig = {
     heading: "One driver, one car, done properly",
     /** Paragraphs of the founder story. EXAMPLE — rewrite in your own words. */
     story: [
-      "JF Taxi Service started with a simple frustration: booking a car for an early flight and having no idea, right up until the moment it did or did not arrive, whether anyone was actually coming.",
+      "Quick Ride Taxis started with a simple frustration: booking a car for an early flight and having no idea, right up until the moment it did or did not arrive, whether anyone was actually coming.",
       "So the model here is deliberately small. One licensed driver, one immaculately kept car, and a diary that is never overbooked. Every journey is agreed in advance at a fixed price, confirmed the night before, and driven by the person you spoke to.",
       "It means we cannot take every job. It also means that when we say we will be outside at ten past four in the morning, we are outside at ten past four in the morning.",
     ],
     founder: {
-      name: "James Fielding", // EXAMPLE
+      name: "The owner", // EXAMPLE — replace with your name
       role: "Owner & licensed driver", // EXAMPLE
     },
   },
@@ -284,7 +285,7 @@ export const siteConfig = {
     },
     {
       quote:
-        "We use JF for client collections now. The price is agreed before, the invoice comes monthly, and nobody has ever been left waiting at the station.",
+        "We use Quick Ride for client collections now. The price is agreed before, the invoice comes monthly, and nobody has ever been left waiting at the station.",
       author: "Daniel O.",
       context: "Corporate account",
     },
@@ -312,7 +313,9 @@ export const siteConfig = {
    * public/images/README.md for the list and suggested sizes.
    */
   images: {
-    logo: "/images/Logo.png", // NB: capital L — the filesystem is case-sensitive in production
+    /* STAND-IN drawn from the supplied business card. Upload the real artwork
+       as quickride-logo.png and change this line to match. */
+    logo: "/images/TODO-quickride-logo.svg",
     /* Reuses the fleet photo behind the hero scrim. Swap in a wide, dark
        shot of the car on the road when one is available. */
     hero: "/images/caddy-front.jpg",
