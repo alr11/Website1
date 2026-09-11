@@ -313,9 +313,10 @@ export const siteConfig = {
    * public/images/README.md for the list and suggested sizes.
    */
   images: {
-    /* STAND-IN drawn from the supplied business card. Upload the real artwork
-       as quickride-logo.png and change this line to match. */
-    logo: "/images/TODO-quickride-logo.svg",
+    /* The roundel from the supplied business card, cropped square and masked
+       onto the brand navy. Derived from quickride-logo.png, which is the full
+       card as uploaded. */
+    logo: "/images/quickride-mark.png",
     /* Reuses the fleet photo behind the hero scrim. Swap in a wide, dark
        shot of the car on the road when one is available. */
     hero: "/images/caddy-front.jpg",

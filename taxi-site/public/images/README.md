@@ -6,8 +6,9 @@ keeping the filename identical — the site reads these paths from
 
 | File | What it should be | Suggested size |
 | --- | --- | --- |
-| **`TODO-quickride-logo.svg`** | ⚠️ Stand-in drawn from the business card. Upload the real artwork as `quickride-logo.png` and point `siteConfig.images.logo` at it. | square, 512px+ |
-| ~~`Logo.png`~~ | Superseded — the old JF Taxi Service logo, no longer referenced. Safe to delete. | — |
+| **`quickride-mark.png`** | ✅ In use as the site logo. The roundel, cropped square from the card and masked onto the brand navy. | 512×512 |
+| `quickride-logo.png` | The full business card as uploaded (1659×948). **Despite the `.png` name this file is a JPEG** — harmless here, but rename it `.jpg` if you reuse it elsewhere. Not referenced by the site: it is a wide card, not a logo. | — |
+| ~~`Logo.png`~~, ~~`TODO-logo.svg`~~ | Superseded — the old JF Taxi Service logo. Not referenced. Safe to delete. | — |
 | ~~`TODO-hero-night-road.svg`~~ | Currently reuses `caddy-front.jpg` behind the hero scrim. Swap in a wide, dark shot of the car on the road when you have one. | 1600×900+ |
 | ~~`TODO-caddy-vw-front-three-quarter.svg`~~ → **`caddy-front.jpg`** | ✅ Supplied (1280×922). | 1280×860+ |
 | ~~`TODO-caddy-vw-rear.svg`~~ | Still needed. Until then `fleetAlt` reuses `caddy-front.jpg`, so the Services page shows the same photo four times. | 1280×860+ |
