@@ -1,0 +1,40 @@
+name: Deploy apps to GitHub Pages
+
+on:
+  # Runs on pushes to any branch, but only deploys from the repo's default branch
+  # (this repo has no `main`), so renaming the default branch needs no edit here.
+  push:
+    paths: ['money-habits/**', 'habit-tracker/**', '.github/workflows/habit-tracker-pages.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    if: github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      # Pocketed at the site root, Tally Habits under /habits/.
+      - name: Assemble site
+        run: |
+          mkdir -p _site/habits
+          cp -R money-habits/. _site/
+          cp -R habit-tracker/. _site/habits/
+          rm -f _site/README.md _site/habits/README.md
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4
