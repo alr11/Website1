@@ -22,8 +22,9 @@ The app has to be served over HTTPS to install. The easiest option is GitHub Pag
 
 1. Merge this into `main`.
 2. In the repo, go to **Settings → Pages** and set **Source** to **GitHub Actions**.
-3. The `Deploy habit tracker to GitHub Pages` workflow publishes the
-   `habit-tracker/` folder to `https://<your-username>.github.io/<repo>/`.
+3. The `Deploy apps to GitHub Pages` workflow publishes this folder to
+   `https://<your-username>.github.io/<repo>/habits/` (the site root is the
+   Pocketed money-habits app in `money-habits/`).
 
 Netlify, Vercel or Cloudflare Pages also work: drag the `habit-tracker/` folder
 in, or point them at it with no build command.

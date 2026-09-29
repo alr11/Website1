@@ -1,9 +1,9 @@
-name: Deploy habit tracker to GitHub Pages
+name: Deploy apps to GitHub Pages
 
 on:
   push:
     branches: [main]
-    paths: ['habit-tracker/**', '.github/workflows/habit-tracker-pages.yml']
+    paths: ['money-habits/**', 'habit-tracker/**', '.github/workflows/habit-tracker-pages.yml']
   workflow_dispatch:
 
 permissions:
@@ -23,9 +23,16 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      # Pocketed at the site root, Tally Habits under /habits/.
+      - name: Assemble site
+        run: |
+          mkdir -p _site/habits
+          cp -R money-habits/. _site/
+          cp -R habit-tracker/. _site/habits/
+          rm -f _site/README.md _site/habits/README.md
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: habit-tracker
+          path: _site
       - id: deployment
         uses: actions/deploy-pages@v4

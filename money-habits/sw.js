@@ -1,5 +1,5 @@
-// Offline cache for Tally Habits. Bump VERSION whenever app files change.
-const VERSION = 'tally-v2';
+// Offline cache for Pocketed. Bump VERSION whenever app files change.
+const VERSION = 'pocketed-v1';
 const SHELL = [
   './',
   'index.html',
