@@ -18,16 +18,10 @@ no account and no server. Data stays on the device.
 
 ## Put it on your phone
 
-The app has to be served over HTTPS to install. The easiest option is GitHub Pages:
-
-1. Merge this into the default branch.
-2. In the repo, go to **Settings → Pages** and set **Source** to **GitHub Actions**.
-3. The `Deploy apps to GitHub Pages` workflow publishes this folder to
-   `https://<your-username>.github.io/<repo>/habits/` (the site root is the
-   Pocketed money-habits app in `money-habits/`).
-
-Netlify, Vercel or Cloudflare Pages also work: drag the `habit-tracker/` folder
-in, or point them at it with no build command.
+The app has to be served over HTTPS to install. Don't use GitHub Pages from
+this repo: its one Pages site is the events decor hire site, and deploying
+here would replace it. Use Netlify, Vercel or Cloudflare Pages (drag the
+`habit-tracker/` folder in, no build command), or give the app its own repo.
 
 Then open the URL on the phone:
 

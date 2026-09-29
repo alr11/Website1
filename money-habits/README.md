@@ -25,11 +25,11 @@ account and says so in Settings.
 
 ## Hosting
 
-The GitHub Pages workflow (`.github/workflows/habit-tracker-pages.yml`)
-publishes this app at the site root and the plain habit tracker at `/habits/`:
-
-- `https://<user>.github.io/<repo>/`: Pocketed
-- `https://<user>.github.io/<repo>/habits/`: Tally Habits
+Don't publish this with GitHub Pages from this repo. The repo's one Pages site
+is the events decor hire site (`.github/workflows/deploy.yml` on
+`claude/events-decor-hire-site-x6kqer`), and a second Pages deploy would
+replace it. Host Pocketed from its own repo or on Netlify/Cloudflare Pages
+(drag in this folder; no build command).
 
 ## Run locally
 
