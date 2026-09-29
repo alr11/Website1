@@ -20,7 +20,7 @@ no account and no server. Data stays on the device.
 
 The app has to be served over HTTPS to install. The easiest option is GitHub Pages:
 
-1. Merge this into `main`.
+1. Merge this into the default branch.
 2. In the repo, go to **Settings → Pages** and set **Source** to **GitHub Actions**.
 3. The `Deploy apps to GitHub Pages` workflow publishes this folder to
    `https://<your-username>.github.io/<repo>/habits/` (the site root is the
